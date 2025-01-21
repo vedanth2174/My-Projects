@@ -1,0 +1,35 @@
+html, body{
+    height: 100%;
+    width: 100%;
+}
+
+.button{
+    width: 60px;
+    padding: 20px;
+    margin: 5px;
+    background-color: #505050;
+    border: 3px;
+    border-radius: 50px;
+    border-width: 2px;
+    border-color: white;
+    color: white;
+    font-size: 16px;
+}
+
+.large-button{
+    width: 130px;
+}
+.buttons{
+    margin-top: 130px;
+}
+
+.orange{
+    background-color: #FF9500;
+}
+.light-grey{
+    color: #414040ee;
+    background-color: #D4D4D2;
+}
+#zero-button{
+    text-align: left;
+}
