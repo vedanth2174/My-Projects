@@ -1,112 +1,71 @@
 //First giving function to all buttons
 //clear button
+let result  = new String()
+
 document.querySelector('#clear').addEventListener('click', (e)=>{
     document.getElementById('task').textContent = ''
+    result = ""
 })
 
-
-//Number buttons first
+//Number buttons second
 const input = document.querySelector('#task')
 
+let operand1_pre
 let operand1
 let operand2
 
 let operator = []
 
-document.querySelector('#zero').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#one').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#two').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#three').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#four').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#five').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#six').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#seven').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#eight').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
-})
-document.querySelector('#nine').addEventListener('click', (e)=>{
-    input.textContent += e.target.textContent
+let numbers = document.getElementsByClassName('button_number');
+
+let button_array = Array.from(numbers)
+
+console.log(button_array)
+button_array.forEach((button)=>{
+    button.addEventListener('click', (e)=>{
+        input.textContent += e.target.textContent
+    })
 })
 
 //Operators
-document.querySelector('#add').addEventListener('click', (e)=>{
-    operand1 = parseInt(document.querySelector('#task').textContent)
-    operator.unshift(e.target.textContent)
-    input.textContent = ""
-})
-document.querySelector('#multiply').addEventListener('click', (e)=>{
-    operand1 = parseInt(document.querySelector('#task').textContent)
-    operator.unshift(e.target.textContent)
-    input.textContent = ""
-})
-document.querySelector('#divide').addEventListener('click', (e)=>{
-    operand1 = parseInt(document.querySelector('#task').textContent)
-    operator.unshift(e.target.textContent)
-    input.textContent = ""
-})
-document.querySelector('#subtract').addEventListener('click', (e)=>{
-    operand1 = parseInt(document.querySelector('#task').textContent)
-    operator.unshift(e.target.textContent)
-    input.textContent = ""
-})
-document.querySelector('#res').addEventListener('click', (e)=>{
-    operand2 = parseInt(document.querySelector('#task').textContent)
-    console.log(operator[0])
-    if(operand1 = ""){
-        input.textContent = ""
-        operand1 = ""
-        operand2 = ""
-    }else{
-        switch(operator[0]){
-            case '+':
-                res = operand1 + operand2;
-                input.textContent = res
-                operand1 = ""
-                operand2 = ""
 
-                break;
-            case '-':
-                res = operand1 - operand2;
-                input.textContent = res
-                operand1 = ""
-                operand2 = ""
-                break;
-            case '×':
-                res = operand1 * operand2;
-                input.textContent = res
-                operand1 = ""
-                operand2 = ""
-                break;
-            case '÷':
-                res = (operand1 / operand2).toPrecision(4);
-                input.textContent = res
-                operand1 = ""
-                operand2 = ""
-                break;
-            default:
-                res = ""
-                input.textContent = res
-                operand1 = ""
-                operand2 = ""
-                break;
-            }
+let symbol = document.getElementsByClassName('button_operator');
+
+let operator_array = Array.from(symbol)
+
+operator_array.forEach((button)=>{
+    button.addEventListener('click', (e)=>{
+        let op = document.querySelector('#task').innerHTML
+        console.log(typeof cop)
+        if(op == "×" ){
+            result += "*"
+            console.log('hii')
+        }else if(op === "÷" ){
+            result += "/"
+            console.log('no hii')
         }
+        else{
+            result += document.querySelector('#task').innerHTML
+        }
+        result += e.target.innerHTML
+        console.log(result)
+        input.textContent = ""
+    })
 })
+
+document.querySelector('#res').addEventListener('click', (e)=>{
+    result += document.querySelector('#task').innerHTML
+    console.log(result)
+    input.textContent = eval(result)
+    result = "  "
+    result = eval(result)
+})
+
+let stri = new String()
+stri +='82'
+stri +='*'
+stri +='8'
+console.log(stri)
+console.log(eval(stri))
 
 
