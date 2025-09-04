@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .auth-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 440px;
+            padding: 48px 40px;
+            position: relative;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .form-description {
+            color: #6b7280;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .social-btn {
+            padding: 12px 16px;
+            background: #fff;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 8px;
+            color: #374151;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .social-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .social-btn:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #3b82f6;
+            ring-opacity: 0.5;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 32px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        .divider-text {
+            padding: 0 16px;
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 400;
+            background: #fff;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            color: #111827;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #fff;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            color: #111827;
+            font-size: 1rem;
+            font-weight: 400;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* Additional Options */
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-input {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 4px;
+            background: #fff;
+            cursor: pointer;
+            position: relative;
+            appearance: none;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-input:checked {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .checkbox-input:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .checkbox-label {
+            color: #374151;
+            font-size: 0.875rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .forgot-link {
+            color: #3b82f6;
+            font-size: 0.875rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-link:hover {
+            color: #1d4ed8;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #111827;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 32px;
+        }
+
+        .submit-btn:hover {
+            background: #1f2937;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.15);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #3b82f6;
+            ring-opacity: 0.5;
+        }
+
+        /* Form Switch */
+        .form-switch {
+            text-align: center;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .switch-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-right: 4px;
+        }
+
+        .switch-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+
+        .switch-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* Form States */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Terms Link Styling */
+        .terms-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .terms-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            .auth-container {
+                padding: 32px 24px;
+                margin: 0 16px;
+            }
+
+            .form-title {
+                font-size: 1.75rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .checkbox-group {
+                align-self: flex-start;
+            }
+
+            body {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 24px 20px;
+                margin: 0 8px;
+            }
+
+            .form-header {
+                margin-bottom: 32px;
+            }
+
+            .social-login {
+                margin-bottom: 24px;
+            }
+
+            .divider {
+                margin: 24px 0;
+            }
+        }
+
+        /* Focus visible for accessibility */
+        .form-input:focus-visible,
+        .submit-btn:focus-visible,
+        .social-btn:focus-visible {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <!-- Login Form -->
+        <div class="auth-form active" id="loginForm">
+            <div class="form-header">
+                <h1 class="form-title">Welcome back</h1>
+                <p class="form-description">Please sign in to your account</p>
+            </div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn">
+                    <span>Continue with Google</span>
+                </button>
+                <button type="button" class="social-btn">
+                    <span>Continue with GitHub</span>
+                </button>
+            </div>
+
+            <div class="divider">
+                <span class="divider-text">or continue with email</span>
+            </div>
+
+            <form id="login">
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Email address</label>
+                    <input 
+                        type="email" 
+                        id="loginEmail"
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword"
+                        class="form-input" 
+                        placeholder="Enter your password"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="rememberMe" class="checkbox-input">
+                        <label for="rememberMe" class="checkbox-label">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn">Sign in</button>
+            </form>
+
+            <div class="form-switch">
+                <span class="switch-text">Don't have an account?</span>
+                <a href="#" class="switch-link" onclick="switchToSignup(event)">Sign up</a>
+            </div>
+        </div>
+
+        <!-- Signup Form -->
+        <div class="auth-form" id="signupForm">
+            <div class="form-header">
+                <h1 class="form-title">Create account</h1>
+                <p class="form-description">Get started with your free account</p>
+            </div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn">
+                    <span>Continue with Google</span>
+                </button>
+                <button type="button" class="social-btn">
+                    <span>Continue with GitHub</span>
+                </button>
+            </div>
+
+            <div class="divider">
+                <span class="divider-text">or create with email</span>
+            </div>
+
+            <form id="signup">
+                <div class="form-group">
+                    <label for="signupName" class="form-label">Full name</label>
+                    <input 
+                        type="text" 
+                        id="signupName"
+                        class="form-input" 
+                        placeholder="Enter your full name"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail" class="form-label">Email address</label>
+                    <input 
+                        type="email" 
+                        id="signupEmail"
+                        class="form-input" 
+                        placeholder="Enter your email"
+                        required
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword" class="form-label">Password</label>
+                    <input 
+                        type="password" 
+                        id="signupPassword"
+                        class="form-input" 
+                        placeholder="Create a password"
+                        required
+                        autocomplete="new-password"
+                    >
+                </div>
+
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="agreeTerms" class="checkbox-input" required>
+                        <label for="agreeTerms" class="checkbox-label">
+                            I agree to the <a href="#" class="terms-link">Terms</a> and <a href="#" class="terms-link">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Create account</button>
+            </form>
+
+            <div class="form-switch">
+                <span class="switch-text">Already have an account?</span>
+                <a href="#" class="switch-link" onclick="switchToLogin(event)">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchToSignup(event) {
+            event.preventDefault();
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('signupForm').classList.add('active');
+        }
+
+        function switchToLogin(event) {
+            event.preventDefault();
+            document.getElementById('signupForm').classList.remove('active');
+            document.getElementById('loginForm').classList.add('active');
+        }
+
+        document.getElementById("signup").addEventListener("submit",  async(e)=>{
+            e.preventDefault();
+            const name = document.getElementById("signupName").value;
+            const email = document.getElementById("signupEmail").value;
+            const pass = document.getElementById("signupPassword").value;
+            //convert to json object
+            const data = {name, email, pass};
+            //send json to backend
+            const response  = await fetch("http://localhost:4000/signup",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.text();
+            console.log(result);            
+        })
+        document.getElementById("login").addEventListener("submit",  async(e)=>{
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const pass = document.getElementById("loginPassword").value;
+            //convert to json object
+            const data = {email, pass};
+            //send json to backend
+            const response  = await fetch("http://localhost:4000/login",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.text();
+            console.log(result);            
+        })
+
+        // Enhanced form interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Custom checkbox behavior
+            const checkboxes = document.querySelectorAll('.checkbox-input');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        this.style.background = '#3b82f6';
+                        this.style.borderColor = '#3b82f6';
+                    } else {
+                        this.style.background = '#fff';
+                        this.style.borderColor = '#d1d5db';
+                    }
+                });
+            });
+
+            // Form validation feedback
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('invalid', function() {
+                    this.style.borderColor = '#ef4444';
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.style.borderColor = '#d1d5db';
+                    }
+                });
+            });
+
+            // Keyboard navigation for custom elements
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.target.classList.contains('switch-link')) {
+                    e.preventDefault();
+                    e.target.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
