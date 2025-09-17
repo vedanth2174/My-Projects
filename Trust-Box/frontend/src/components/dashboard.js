@@ -97,7 +97,7 @@ const Dashboard = () => {
               <button className="theme-toggle" onClick={toggleTheme}>
                 {isDarkMode ? "☀️" : "🌙"}
               </button>
-              <button className="btn btn-wallet">Connect Wallet</button>
+              <button id="wallet" className="btn btn-wallet">Connect Wallet</button>
             </div>
           </div>
         </nav>
