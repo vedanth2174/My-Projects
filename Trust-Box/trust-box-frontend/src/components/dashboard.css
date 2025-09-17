@@ -16,20 +16,6 @@
   --backdrop-blur: blur(10px);
 }
 
-/* Light theme variables */
-.light-theme {
-  --primary-bg: #ffffff;
-  --secondary-bg: #f8f9fa;
-  --card-bg: rgba(0, 0, 0, 0.05);
-  --text-primary: #000000;
-  --text-secondary: #666666;
-  --accent-primary: #000000;
-  --accent-secondary: #333333;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --gradient-primary: linear-gradient(135deg, #000000, #333333);
-  --gradient-secondary: linear-gradient(135deg, #333333, #666666);
-  --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
 
 /* Reset and base styles */
 * {
@@ -57,7 +43,7 @@ body {
   padding: 0 20px;
 }
 
-/* Navbar styles with glassmorphism effect and responsive design */
+/* Improved navbar styles with better light theme support */
 .navbar {
   position: fixed;
   top: 0;
@@ -72,7 +58,8 @@ body {
 }
 
 .light-theme .navbar {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .navbar-container {
@@ -132,7 +119,7 @@ body {
   gap: 1rem;
 }
 
-/* Theme toggle button styles */
+/* Improved theme toggle button styles */
 .theme-toggle {
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -142,11 +129,73 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1.2rem;
+  backdrop-filter: var(--backdrop-blur);
 }
 
 .theme-toggle:hover {
   background: var(--accent-secondary);
+  color: var(--primary-bg);
   transform: scale(1.1);
+}
+
+/* Added styles for wallet button states */
+.btn-wallet {
+  background: var(--gradient-primary);
+  color: var(--primary-bg);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-wallet:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-connected {
+    align-items: center;
+  background: var(--gradient-primary);
+  color: var(--primary-bg);
+  padding: 10px 20px;
+  border: 1px solid var(--accent-primary);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-glass);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logout {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+#connection{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-connected:hover {
+  background: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.light-theme .btn-wallet:hover,
+.light-theme .btn-connected:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn-start {
@@ -188,10 +237,11 @@ body {
     radial-gradient(circle at 20% 80%, rgba(150, 150, 150, 0.05) 0%, transparent 50%);
 }
 
+/* Improved light theme hero background */
 .light-theme .hero-background {
-  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(100, 100, 100, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 20% 80%, rgba(50, 50, 50, 0.05) 0%, transparent 50%);
+  background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(100, 100, 100, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(50, 50, 50, 0.03) 0%, transparent 50%);
 }
 
 .network-animation {
@@ -279,6 +329,11 @@ body {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Improved light theme button hover effects */
+.light-theme .btn-primary:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .btn-secondary {

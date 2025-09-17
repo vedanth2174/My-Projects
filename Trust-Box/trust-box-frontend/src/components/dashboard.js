@@ -1,54 +1,97 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import "./dashboard.css"
+import logout from "./logout.png"
+import { ethers } from "ethers";
+import contractABI from "./suggestion-box.json"; // ABI from Remix
+
+const contractAddress = "0x64a9dda5b065c0105c387af5caa6ea11a52926a5"; 
 
 const Dashboard = () => {
-  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [account, setAccount] = useState(null)
+  const [suggestions, setSuggestions] = useState([]);
+  const connectWallet = async () => {
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        })
+        setAccount(accounts[0])
+        console.log("Connected account:", accounts[0])
+      } catch (error) {
+        console.error("User rejected the request", error)
+      }
+    } else {
+      alert("Please install MetaMask!")
+    }
+  }
+
+  const disconnectWallet = () => {
+    setAccount(null)
+    console.log("Wallet disconnected")
+    localStorage.removeItem("account")
+  }
+
   const [isModalOpen, setIsModalOpen] = useState(false)
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     name: "",
   })
 
-  const [suggestions] = useState([
-    {
-      id: 1,
-      title: "Implement Dark Mode Toggle",
-      proposer: "0x742d...8f3a",
-      status: "Open",
-      upvotes: 24,
-      downvotes: 3,
-      description: "Add a dark/light mode toggle for better user experience",
-    },
-    {
-      id: 2,
-      title: "Add Mobile Wallet Integration",
-      proposer: "0x9a1b...2c4d",
-      status: "Accepted",
-      upvotes: 45,
-      downvotes: 2,
-      description: "Integrate popular mobile wallets for easier access",
-    },
-    {
-      id: 3,
-      title: "Create Governance Token",
-      proposer: "0x5e7f...9g8h",
-      status: "Open",
-      upvotes: 18,
-      downvotes: 7,
-      description: "Launch a governance token for voting power distribution",
-    },
-  ])
+  // Load all suggestions
+  const loadSuggestions = async () => {
+    if (!window.ethereum) return;
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const contract = new ethers.Contract(contractAddress, contractABI.abi, provider);
+
+    const total = await contract.getTotalSuggestions();
+    let items = [];
+
+    for (let i = 0; i < total; i++) {
+      const [title, description, name, timestamp, voteCount] = await contract.getSuggestion(i);
+      items.push({
+        id: i,
+        title,
+        description,
+        name,
+        timestamp: new Date(Number(timestamp) * 1000).toLocaleString(),
+        voteCount: Number(voteCount),
+      });
+    }
+
+    setSuggestions(items);
+    console.log("Loaded suggestions:", suggestions);
+  };
+
+  const vote = async (id) => {
+    if (!window.ethereum) return;
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
+
+    try {
+      const tx = await contract.vote(suggestions.id);
+      await tx.wait();
+      alert("Vote successful!");
+      loadSuggestions(); // refresh votes
+    } catch (error) {
+      alert(error.reason || "Transaction failed");
+      console.error("Vote error:", error);
+    }
+  };
+
+  useEffect(() => {
+    loadSuggestions();
+  }, []);
 
   const handleVote = (id, type) => {
     console.log(`Voting ${type} on suggestion ${id}`)
-    // Implement voting logic here
-  }
+    
+    vote(suggestions.id);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode)
   }
 
   const openModal = () => {
@@ -68,19 +111,44 @@ const Dashboard = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const [status, setStatus] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const timestamp = new Date().toISOString()
     console.log("Suggestion submitted:", {
       ...formData,
       timestamp,
     })
-    alert("Suggestion submitted successfully!")
+
+    if (!window.ethereum) {
+      alert("MetaMask not detected!");
+      return;
+    }
+
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
+
+      const tx = await contract.addSuggestion(
+        formData.title,
+        formData.description,
+        formData.name
+      );
+
+      setStatus("Submitting transaction...");
+      await tx.wait();
+      setStatus("✅ Suggestion submitted to Sepolia blockchain!");
+    } catch (error) {
+      console.error(error);
+      setStatus("❌ Transaction failed");
+    }
     closeModal()
   }
 
   return (
-    <div className={`dashboard ${isDarkMode ? "dark-theme" : "light-theme"}`}>
+    <div>
       <div className={`main-content ${isModalOpen ? "blurred" : ""}`}>
         <nav className="navbar">
           <div className="navbar-container">
@@ -94,10 +162,20 @@ const Dashboard = () => {
               <a href="#features">Features</a>
             </div>
             <div className="navbar-actions">
-              <button className="theme-toggle" onClick={toggleTheme}>
-                {isDarkMode ? "☀️" : "🌙"}
+              <button
+                id="wallet"
+                className={`btn ${account ? "btn-connected" : "btn-wallet"}`}
+                onClick={account ? disconnectWallet : connectWallet}
+              >
+                <div id="connection">
+                  <div>{account ? "Connected" : "Connect Wallet"}</div>
+                  {account && (
+                    <div>
+                      <img src={logout || "/placeholder.svg"} alt="wallet" className="logout" />
+                    </div>
+                  )}
+                </div>
               </button>
-              <button id="wallet" className="btn btn-wallet">Connect Wallet</button>
             </div>
           </div>
         </nav>
@@ -146,6 +224,8 @@ const Dashboard = () => {
           </div>
         </section>
 
+                  
+
         {/* Live Suggestions Preview */}
         <section className="suggestions-preview" id="suggestions">
           <div className="container">
@@ -155,16 +235,16 @@ const Dashboard = () => {
                 <div key={suggestion.id} className="suggestion-card">
                   <div className="suggestion-header">
                     <h3 className="suggestion-title">{suggestion.title}</h3>
-                    <span className={`status status-${suggestion.status.toLowerCase()}`}>{suggestion.status}</span>
+                    <span className={`status status-Active`}>Active</span>
                   </div>
                   <p className="suggestion-description">{suggestion.description}</p>
                   <div className="suggestion-meta">
-                    <span className="proposer">By: {suggestion.proposer}</span>
+                    <span className="proposer">By: {suggestion.name}</span>
                   </div>
                   <div className="suggestion-actions">
                     <div className="votes">
                       <button className="vote-btn upvote" onClick={() => handleVote(suggestion.id, "up")}>
-                        ↑ {suggestion.upvotes}
+                        ↑ {suggestion.voteCount}
                       </button>
                       <button className="vote-btn downvote" onClick={() => handleVote(suggestion.id, "down")}>
                         ↓ {suggestion.downvotes}
