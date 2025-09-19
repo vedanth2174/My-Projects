@@ -6,7 +6,7 @@ import logout from "./logout.png"
 import { ethers } from "ethers";
 import contractABI from "./suggestion-box.json"; // ABI from Remix
 
-const contractAddress = "0x64a9dda5b065c0105c387af5caa6ea11a52926a5"; 
+const contractAddress = "0x932b39bf2be7ff41d07046b987ff08398d33a38a"; 
 
 const Dashboard = () => {
   const [account, setAccount] = useState(null)
@@ -51,48 +51,49 @@ const Dashboard = () => {
     let items = [];
 
     for (let i = 0; i < total; i++) {
-      const [title, description, name, timestamp, voteCount] = await contract.getSuggestion(i);
+      const [title, description, name, timestamp, upvotes, downvotes, status] =
+        await contract.getSuggestion(i);
+
       items.push({
         id: i,
         title,
         description,
         name,
         timestamp: new Date(Number(timestamp) * 1000).toLocaleString(),
-        voteCount: Number(voteCount),
+        upvotes: Number(upvotes),
+        downvotes: Number(downvotes),
+        status
       });
-    }
+  }
 
-    setSuggestions(items);
-    console.log("Loaded suggestions:", suggestions);
-  };
+  setSuggestions(items);
+};
 
-  const vote = async (id) => {
-    if (!window.ethereum) return;
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
-    const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
 
-    try {
-      const tx = await contract.vote(suggestions.id);
-      await tx.wait();
-      alert("Vote successful!");
-      loadSuggestions(); // refresh votes
-    } catch (error) {
-      alert(error.reason || "Transaction failed");
-      console.error("Vote error:", error);
-    }
-  };
+
 
   useEffect(() => {
     loadSuggestions();
   }, []);
 
-  const handleVote = (id, type) => {
-    console.log(`Voting ${type} on suggestion ${id}`)
-    
-    vote(suggestions.id);
+  const handleVote = async (id, isUpvote) => {
+    if (!window.ethereum) return;
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
 
-  }
+      const tx = await contract.vote(id, isUpvote);
+      await tx.wait();
+
+      alert("Vote submitted!");
+      loadSuggestions(); // refresh list
+    } catch (err) {
+      console.error("Vote error:", err);
+      alert("Voting failed: " + (err.reason || err.message));
+    }
+  };
+
 
   const openModal = () => {
     setIsModalOpen(true)
@@ -235,7 +236,7 @@ const Dashboard = () => {
                 <div key={suggestion.id} className="suggestion-card">
                   <div className="suggestion-header">
                     <h3 className="suggestion-title">{suggestion.title}</h3>
-                    <span className={`status status-Active`}>Active</span>
+                    <span className={`status status-${suggestion.status.toLowerCase()}`}>{suggestion.status}</span>
                   </div>
                   <p className="suggestion-description">{suggestion.description}</p>
                   <div className="suggestion-meta">
@@ -244,13 +245,12 @@ const Dashboard = () => {
                   <div className="suggestion-actions">
                     <div className="votes">
                       <button className="vote-btn upvote" onClick={() => handleVote(suggestion.id, "up")}>
-                        ↑ {suggestion.voteCount}
+                        ↑ {suggestion.upvotes}
                       </button>
                       <button className="vote-btn downvote" onClick={() => handleVote(suggestion.id, "down")}>
                         ↓ {suggestion.downvotes}
                       </button>
                     </div>
-                    <button className="btn btn-vote">Vote</button>
                   </div>
                 </div>
               ))}

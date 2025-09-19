@@ -351,6 +351,7 @@ body {
 
 .btn-vote {
   background: var(--gradient-secondary);
+  width: 100px;
   color: var(--primary-bg);
   padding: 8px 16px;
   font-size: 0.9rem;
