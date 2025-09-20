@@ -67,6 +67,7 @@ const Dashboard = () => {
   }
 
   setSuggestions(items);
+  console.log("Loaded suggestions:", items);
 };
 
 
@@ -159,7 +160,9 @@ const Dashboard = () => {
             <div className="navbar-links">
               <a href="#home">Home</a>
               <a href="#how-it-works">How It Works</a>
-              <a href="#suggestions">Suggestions</a>
+              <a href="#suggestions"
+              onClick={loadSuggestions}
+              >Suggestions</a>
               <a href="#features">Features</a>
             </div>
             <div className="navbar-actions">
