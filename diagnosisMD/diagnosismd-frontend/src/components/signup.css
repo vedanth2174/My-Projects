@@ -137,16 +137,6 @@ body {
     text-align: center;
 }
 
-.divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: #e5e7eb;
-}
-
 .divider-text {
     background: white;
     padding: 0 1rem;

@@ -37,11 +37,65 @@ const Signup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert(isSignUp ? 'Account created successfully!' : 'Signed in successfully!');
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    let url = "";
+    let payload = {};
+
+    if (isSignUp) {
+      // Validate passwords
+      if (formData.password !== formData.confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      url = "http://localhost:5000/signup";
+      payload = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        institution: formData.institution,
+        email: formData.email,
+        password: formData.password,
+        agreeToTerms: formData.agreeToTerms,
+      };
+    } else {
+      url = "http://localhost:5000/login";
+      payload = {
+        email: formData.email,
+        password: formData.password,
+      };
+    }
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || (isSignUp ? "Signup failed" : "Login failed"));
+    }
+
+    // Save JWT token
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
+
+    alert(isSignUp ? "Signup successful!" : "Login successful!");
+    window.location.href = "/dashboard"; // redirect to dashboard
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert(error.message);
+  }
+};
+
 
   const GoogleIcon = () => (
     <svg className="social-icon" viewBox="0 0 24 24">
