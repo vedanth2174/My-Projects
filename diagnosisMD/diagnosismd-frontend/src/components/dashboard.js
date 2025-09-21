@@ -48,6 +48,12 @@ const Dashboard = () => {
     { icon: "⚙️", label: "Settings" },
   ]
 
+  const handleLogout = () => {  
+    // Clear user session (e.g., remove token from localStorage)  
+    localStorage.removeItem("token");
+    // Redirect to login page 
+    window.location.href = "/signup";
+  }
   return (
     <div className="dashboard-container">
       {/* Top Navbar */}
@@ -74,7 +80,8 @@ const Dashboard = () => {
               <span className="profile-name">{userName}</span>
               <div className="dropdown-menu">
                 <a href="#settings">Settings</a>
-                <a href="#logout">Logout</a>
+                
+                <button onClick={handleLogout} className="btn-primary1">Logout</button>
               </div>
             </div>
           </div>

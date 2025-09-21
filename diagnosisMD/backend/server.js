@@ -39,6 +39,8 @@ app.post('/signup', async (req, res) => {
   if (!agreeToTerms) {
     return res.status(400).json({ message: 'You must agree to the terms and conditions.' });
   }
+  const a= req.body
+  console.log(a);
   if (password !== confirmPassword) {
     return res.status(400).json({ message: 'Passwords do not match.' });
   }

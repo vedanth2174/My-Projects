@@ -14,6 +14,7 @@ const Signup = () => {
     confirmPassword: '',
     agreeToTerms: false
   });
+  
 
   const toggleAuthMode = () => {
     setIsSignUp(!isSignUp);
@@ -45,11 +46,10 @@ const Signup = () => {
     let payload = {};
 
     if (isSignUp) {
-      // Validate passwords
-      if (formData.password !== formData.confirmPassword) {
-        alert("Passwords do not match!");
-        return;
-      }
+      // if (formData.password !== formData.confirmPassword) {
+      //   alert("Passwords do not match!");
+      //   return;
+      // }
 
       url = "http://localhost:5000/signup";
       payload = {
@@ -59,6 +59,7 @@ const Signup = () => {
         email: formData.email,
         password: formData.password,
         agreeToTerms: formData.agreeToTerms,
+        confirmPassword: formData.confirmPassword,
       };
     } else {
       url = "http://localhost:5000/login";
@@ -70,31 +71,30 @@ const Signup = () => {
 
     const response = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
     const data = await response.json();
+    console.log(data);
 
     if (!response.ok) {
-      throw new Error(data.message || (isSignUp ? "Signup failed" : "Login failed"));
+      throw new Error(data.message || response.statusText || (isSignUp ? "Signup failed" : "Login failed"));
     }
 
-    // Save JWT token
     if (data.token) {
       localStorage.setItem("token", data.token);
     }
 
     alert(isSignUp ? "Signup successful!" : "Login successful!");
-    window.location.href = "/dashboard"; // redirect to dashboard
+    navigate( "/signup") // ✅ better than window.location.href
 
   } catch (error) {
     console.error("Error:", error);
     alert(error.message);
   }
 };
+
 
 
   const GoogleIcon = () => (
