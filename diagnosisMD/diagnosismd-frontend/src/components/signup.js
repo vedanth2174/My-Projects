@@ -51,7 +51,7 @@ const Signup = () => {
       //   return;
       // }
 
-      url = "http://localhost:5000/signup";
+      url = "https://my-projects-mwn1.onrender.com/signup";
       payload = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -62,7 +62,7 @@ const Signup = () => {
         confirmPassword: formData.confirmPassword,
       };
     } else {
-      url = "http://localhost:5000/login";
+      url = "https://my-projects-mwn1.onrender.com/login";
       payload = {
         email: formData.email,
         password: formData.password,
