@@ -1,0 +1,499 @@
+/* Upload Page Styles */
+.upload-container {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #f8fffe;
+  min-height: 100vh;
+  padding: 32px;
+  color: #2d3748;
+}
+
+.upload-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.upload-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 12px;
+}
+
+.upload-header p {
+  font-size: 16px;
+  color: #4a5568;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.upload-form {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Section Styles */
+.patient-info-section,
+.scan-info-section,
+.file-upload-section,
+.analysis-options-section,
+.submit-section {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.patient-info-section h2,
+.scan-info-section h2,
+.file-upload-section h2,
+.analysis-options-section h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a202c;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.patient-info-section h2::before {
+  content: "👤";
+  font-size: 20px;
+}
+
+.scan-info-section h2::before {
+  content: "🏥";
+  font-size: 20px;
+}
+
+.file-upload-section h2::before {
+  content: "📁";
+  font-size: 20px;
+}
+
+.analysis-options-section h2::before {
+  content: "🤖";
+  font-size: 20px;
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 14px;
+  background: white;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #1b6e2f;
+  box-shadow: 0 0 0 3px rgba(27, 110, 47, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Upload Dropzone */
+.upload-dropzone {
+  border: 2px dashed #cbd5e0;
+  border-radius: 16px;
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #fafcff;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.drag-active {
+  border-color: #1b6e2f;
+  background: linear-gradient(135deg, #e6f5ec, #cdefd9);
+  transform: translateY(-2px);
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.upload-dropzone h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+}
+
+.upload-dropzone p {
+  color: #4a5568;
+  margin-bottom: 16px;
+}
+
+.supported-formats {
+  background: #f7fafc;
+  padding: 8px 16px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.supported-formats span {
+  font-size: 12px;
+  color: #718096;
+  font-weight: 500;
+}
+
+/* Uploaded Files */
+.uploaded-files {
+  margin-top: 24px;
+}
+
+.uploaded-files h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 16px;
+}
+
+.files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f7fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.file-icon {
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.file-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  font-weight: 500;
+  color: #2d3748;
+  font-size: 14px;
+}
+
+.file-size {
+  color: #718096;
+  font-size: 12px;
+}
+
+.file-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-bar {
+  width: 100px;
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1b6e2f, #2d8f47);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #4a5568;
+  font-weight: 500;
+  min-width: 35px;
+}
+
+.status-completed {
+  color: #38a169;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.remove-file-btn {
+  background: none;
+  border: none;
+  color: #e53e3e;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.remove-file-btn:hover {
+  background: #fed7d7;
+}
+
+/* Analysis Options */
+.analysis-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px;
+}
+
+.option-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s;
+  background: white;
+}
+
+.option-card:hover {
+  border-color: #1b6e2f;
+  box-shadow: 0 4px 12px rgba(27, 110, 47, 0.1);
+}
+
+.option-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.option-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.option-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.option-badge.free {
+  background: #f0fff4;
+  color: #38a169;
+}
+
+.option-badge.premium {
+  background: linear-gradient(135deg, #1b6e2f, #2d8f47);
+  color: white;
+}
+
+.option-card p {
+  color: #4a5568;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.option-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.option-card li {
+  color: #2d3748;
+  font-size: 14px;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.option-card li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #38a169;
+  font-weight: 600;
+}
+
+/* Submit Section */
+.submit-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.btn-secondary {
+  padding: 16px 32px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #4a5568;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  padding: 16px 32px;
+  border: none;
+  background: linear-gradient(135deg, #1b6e2f, #2d8f47);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(27, 110, 47, 0.3);
+}
+
+.btn-secondary:hover {
+  border-color: #cbd5e0;
+  background: #f7fafc;
+  transform: translateY(-1px);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #155a26, #246b3a);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(27, 110, 47, 0.4);
+}
+
+.btn-primary:disabled {
+  background: #cbd5e0;
+  color: #a0aec0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.submit-info {
+  text-align: center;
+}
+
+.submit-info p {
+  color: #718096;
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .upload-container {
+    padding: 16px;
+  }
+
+  .upload-header h1 {
+    font-size: 24px;
+  }
+
+  .patient-info-section,
+  .scan-info-section,
+  .file-upload-section,
+  .analysis-options-section,
+  .submit-section {
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-options {
+    grid-template-columns: 1fr;
+  }
+
+  .submit-actions {
+    flex-direction: column;
+  }
+
+  .upload-dropzone {
+    padding: 32px 16px;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .file-status {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-header h1 {
+    font-size: 20px;
+  }
+
+  .upload-header p {
+    font-size: 14px;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}

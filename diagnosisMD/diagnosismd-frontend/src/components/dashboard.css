@@ -122,6 +122,23 @@
   position: relative;
 }
 
+.profile-btn{
+  border: none;
+  width: 100%;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  align-items: center;
+}
+.profile-btn:hover{
+  border: none;
+  width: 100%;
+  background: rgba(245, 245, 245, 0.577);
+  cursor: pointer;
+  font-size: 16px;
+  align-items: center;
+}
+
 .profile-avatar {
   width: 40px;
   height: 40px;
@@ -151,13 +168,15 @@
   padding: 8px 0;
   min-width: 150px;
   display: none;
+  align-items: center;
+  margin: auto;
 }
 
 .profile-dropdown:hover .dropdown-menu {
   display: block;
 }
 
-.dropdown-menu a {
+.dropdown-menu button {
   display: block;
   padding: 12px 16px;
   text-decoration: none;
@@ -165,9 +184,7 @@
   transition: background-color 0.2s;
 }
 
-.dropdown-menu a:hover {
-  background-color: #f7fafc;
-}
+
 
 /* Main Layout */
 .main-layout {
@@ -649,6 +666,11 @@ td {
 
 .btn-primary:hover {
   background: #155a26;
+}
+
+.btn-sidebar{
+  border: none;
+  background: none;
 }
 
 /* Treatment Section */

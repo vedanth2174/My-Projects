@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import "./dashboard.css"
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [activeTab, setActiveTab] = useState("generated")
   const [userName] = useState("Dr. Subhash Gupta")
@@ -40,12 +42,12 @@ const Dashboard = () => {
   ]
 
   const sidebarItems = [
-    { icon: "📊", label: "Dashboard", active: true },
-    { icon: "📤", label: "Upload Scan" },
-    { icon: "📋", label: "View Generated Reports" },
-    { icon: "📄", label: "Upload Doctor Report" },
-    { icon: "💊", label: "Suggested Treatments" },
-    { icon: "⚙️", label: "Settings" },
+    { icon: "📊", label: "Dashboard", active: true ,link:"/dashboard"},
+    { icon: "📤", label: "Upload Scan", link:"/upload" },
+    { icon: "📋", label: "View Generated Reports", link:"/generated-reports" },
+    { icon: "📄", label: "Upload Doctor Report", link:"/upload-doctor-report" },
+    { icon: "💊", label: "Suggested Treatments", link:"/treatments" },
+    { icon: "⚙️", label: "Settings", link:"/settings" },
   ]
 
   const handleLogout = () => {  
@@ -79,9 +81,15 @@ const Dashboard = () => {
             <div className="profile-info">
               <span className="profile-name">{userName}</span>
               <div className="dropdown-menu">
-                <a href="#settings">Settings</a>
-                
-                <button onClick={handleLogout} className="btn-primary1">Logout</button>
+                <button className="profile-btn"
+                onClick={() => navigate('/settings')}
+                >
+                  Settings
+                </button>
+                <button className="profile-btn"
+                onClick={handleLogout}>
+                  Logout
+                </button>
               </div>
             </div>
           </div>
@@ -93,10 +101,12 @@ const Dashboard = () => {
         <aside className={`sidebar ${sidebarCollapsed ? "collapsed" : ""}`}>
           <nav className="sidebar-nav">
             {sidebarItems.map((item, index) => (
+              <button className="btn-sidebar" key={index} onClick={() =>navigate(item.link)}>
               <a key={index} href="#" className={`sidebar-item ${item.active ? "active" : ""}`}>
                 <span className="sidebar-icon">{item.icon}</span>
                 <span className="sidebar-label">{item.label}</span>
               </a>
+              </button>
             ))}
           </nav>
         </aside>
@@ -109,7 +119,9 @@ const Dashboard = () => {
               <h1>Welcome back, {userName}</h1>
               <p>Ready to analyze medical scans with AI precision</p>
             </div>
-            <button className="upload-btn">Upload Scan</button>
+            <button className="upload-btn"
+            onClick={() => navigate('/upload')}
+            >Upload Scan</button>
           </section>
 
           {/* Stats Cards */}

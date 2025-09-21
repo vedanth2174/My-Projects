@@ -85,9 +85,8 @@ const Signup = () => {
     if (data.token) {
       localStorage.setItem("token", data.token);
     }
-
-    alert(isSignUp ? "Signup successful!" : "Login successful!");
-    navigate( "/signup") // ✅ better than window.location.href
+    setIsSignUp(false);
+    navigate(isSignUp ? "/signup" : "/dashboard") // ✅ better than window.location.href
 
   } catch (error) {
     console.error("Error:", error);
