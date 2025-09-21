@@ -201,7 +201,7 @@ const Signup = () => {
                   {isSignUp && (
                     <>
                       <div className="form-row">
-                        <div className="form-group">
+                        <div className="form-group-signup">
                           <label htmlFor="firstName" className="form-label">First Name</label>
                           <input 
                             type="text" 
@@ -213,7 +213,7 @@ const Signup = () => {
                             required 
                           />
                         </div>
-                        <div className="form-group">
+                        <div className="form-group-signup">
                           <label htmlFor="lastName" className="form-label">Last Name</label>
                           <input 
                             type="text" 
@@ -227,7 +227,7 @@ const Signup = () => {
                         </div>
                       </div>
                       
-                      <div className="form-group">
+                      <div className="form-group-signup">
                         <label htmlFor="institution" className="form-label">Medical Institution</label>
                         <input 
                           type="text" 
@@ -245,7 +245,7 @@ const Signup = () => {
                     </>
                   )}
 
-                  <div className="form-group">
+                  <div className="form-group-signup">
                     <label htmlFor="email" className="form-label">Email Address</label>
                     <input 
                       type="email" 
@@ -258,7 +258,7 @@ const Signup = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  <div className="form-group-signup">
                     <label htmlFor="password" className="form-label">Password</label>
                     <input 
                       type="password" 
@@ -272,7 +272,7 @@ const Signup = () => {
                   </div>
 
                   {isSignUp && (
-                    <div className="form-group">
+                    <div className="form-group-signup">
                       <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
                       <input 
                         type="password" 
@@ -287,13 +287,13 @@ const Signup = () => {
                   )}
 
                   {!isSignUp && (
-                    <div className="form-group">
+                    <div className="form-group-signup">
                       <a href="#" className="forgot-password">Forgot your password?</a>
                     </div>
                   )}
 
                   {isSignUp && (
-                    <div className="form-group">
+                    <div className="form-group-signup">
                       <label className="checkbox-label">
                         <input 
                           type="checkbox" 

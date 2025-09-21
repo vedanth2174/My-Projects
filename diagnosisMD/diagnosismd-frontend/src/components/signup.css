@@ -157,7 +157,7 @@ body {
     gap: 1rem;
 }
 
-.form-group {
+.form-group-signup {
     display: flex;
     flex-direction: column;
 }

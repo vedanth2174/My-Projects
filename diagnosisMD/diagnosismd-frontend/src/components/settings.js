@@ -93,8 +93,15 @@ const Settings = () => {
             <div className="profile-info">
               <span className="profile-name">{userName}</span>
               <div className="dropdown-menu">
-                <a href="#settings">Settings</a>
-                <a href="#logout">Logout</a>
+                <button className="profile-btn"
+                onClick={() => navigate('/settings')}
+                >
+                  Settings
+                </button>
+                <button className="profile-btn"
+                onClick={handleLogout}>
+                  Logout
+                </button>
               </div>
             </div>
           </div>
