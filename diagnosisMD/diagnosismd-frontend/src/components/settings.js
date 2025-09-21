@@ -68,6 +68,13 @@ const Settings = () => {
     setAiSettings((prev) => ({ ...prev, [setting]: value }))
   }
 
+  const handleLogout = () => {  
+    // Clear user session (e.g., remove token from localStorage)  
+    localStorage.removeItem("token");
+    // Redirect to login page 
+    window.location.href = "/signup";
+  }
+
   return (
     <div className="dashboard-container">
       {/* Top Navbar */}

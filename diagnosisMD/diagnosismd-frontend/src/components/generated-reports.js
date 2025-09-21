@@ -115,6 +115,13 @@ const GeneratedReports = () => {
     }
   })
 
+  const handleLogout = () => {  
+    // Clear user session (e.g., remove token from localStorage)  
+    localStorage.removeItem("token");
+    // Redirect to login page 
+    window.location.href = "/signup";
+  }
+  
   return (
     <div className="reports-container">
       {/* Top Navbar */}

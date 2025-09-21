@@ -128,6 +128,13 @@ const Upload = () => {
     return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 
+  const handleLogout = () => {  
+    // Clear user session (e.g., remove token from localStorage)  
+    localStorage.removeItem("token");
+    // Redirect to login page 
+    window.location.href = "/signup";
+  }
+
   return (
     <div className="dashboard-container">
       {/* Top Navbar */}
