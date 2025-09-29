@@ -62,7 +62,7 @@ const Signup = () => {
         confirmPassword: formData.confirmPassword,
       };
     } else {
-      url = "https://my-projects-mwn1.onrender.com/login";
+      url = "https://diagnosismd.onrender.com/login";
       payload = {
         email: formData.email,
         password: formData.password,
