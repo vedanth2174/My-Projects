@@ -51,7 +51,7 @@ const Signup = () => {
       //   return;
       // }
 
-      url = "https://my-projects-mwn1.onrender.com/signup";
+      url = "https://diagnosismd.onrender.com/signup";
       payload = {
         firstName: formData.firstName,
         lastName: formData.lastName,
