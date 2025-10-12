@@ -46,12 +46,7 @@ const Signup = () => {
     let payload = {};
 
     if (isSignUp) {
-      // if (formData.password !== formData.confirmPassword) {
-      //   alert("Passwords do not match!");
-      //   return;
-      // }
-
-      url = "https://my-projects-mwn1.onrender.com/signup";
+      url = "https://diagnosismd.onrender.com/signup";
       payload = {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -62,7 +57,7 @@ const Signup = () => {
         confirmPassword: formData.confirmPassword,
       };
     } else {
-      url = "https://my-projects-mwn1.onrender.com/login";
+      url = "https://diagnosismd.onrender.com/login";
       payload = {
         email: formData.email,
         password: formData.password,
