@@ -298,7 +298,7 @@ const Dashboard = () => {
                 <a href="#home">Home</a>
                 <a href="#submit">Submit Suggestion</a>
                 <a href="#view">View Suggestions</a>
-                <a href="#github">GitHub</a>
+                <a href="https://github.com/vedanth2174/My-Projects">GitHub</a>
                 <a href="#docs">Docs</a>
               </div>
               <div className="social-icons">
