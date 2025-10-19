@@ -10,11 +10,11 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
-app.use(bodyParser);
+app.use(cors());
 
 const PORT = 5000;
 const MONGO_URI = process.env.MONGO_URI;
-const jwt = process.env.jwt;
+const jwt_secret = process.env.jwt;
 
 mongoose
   .connect(MONGO_URI, {
@@ -38,7 +38,6 @@ app.post("/register", async (req, res) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
     const newUser = new User({
       name,
-      contact_no,
       email,
       password: hashedPassword,
     });
@@ -57,7 +56,28 @@ app.post("/register", async (req, res) => {
   }
 });
 
-
+//login
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    //check if user exists
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    //match password
+    const isMatch = await bcryptjs.compare(password, existingUser.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    const token = jwt.sign({ email: existingUser.email }, jwt_secret, {
+      expiresIn: "1h",
+    });
+    res.json({ token, user: { name: existingUser.name, email: existingUser.email } });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server live on port number ${PORT}`);

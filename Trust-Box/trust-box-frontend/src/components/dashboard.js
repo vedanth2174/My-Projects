@@ -1,56 +1,83 @@
-"use client"
+"use client";
 
-import { useState,useEffect } from "react"
-import "./dashboard.css"
+import { useState, useEffect } from "react";
+import "./dashboard.css";
 
 const Dashboard = () => {
-  const [account, setAccount] = useState(null)
-  // const [suggestions, setSuggestions] = useState([]);
 
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false)
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    name: "",
-  })
+    email: "",
+    password: "",
+  });
 
-const suggestions = [
-  {title: "The Knowledge Wall",
-    status: "active",
-    description: "Dedicate one wall to display key concepts, quotes, and visual aids related to the subject. Use colorful charts, mind maps, and student-created infographics. This visual learning corner keeps students inspired and helps in quick revision before exams.",
-    name: "Vedant",
-    upvotes: 5,
-    downvotes: 3,
-  },
-  {title: "The Growth Corner",
-    status: "active",
-    description: "Set up a small corner with plants, motivational quotes, and a “Weekly Achievement Board.” Students can post their small wins — like completing an assignment, helping a classmate, or improving test scores. It promotes positivity and teamwork.",
-    name: "Vivek",
-    upvotes: 5,
-    downvotes: 3,
-  },
-  {title: "The Innovation Zone",
-    status: "active",
-    description: "Designate a section of the classroom for creativity and project work. Include whiteboards, sticky notes, and prototypes of student ideas. Encourage discussions, brainstorming, and mini-presentations to make learning interactive and hands-on.",
-    name: "Shreya",
-    upvotes: 5,
-    downvotes: 3,
-  }
-]
+  const suggestions = [
+    {
+      title: "The Knowledge Wall",
+      status: "active",
+      description:
+        "Dedicate one wall to display key concepts, quotes, and visual aids related to the subject. Use colorful charts, mind maps, and student-created infographics. This visual learning corner keeps students inspired and helps in quick revision before exams.",
+      name: "Vedant",
+      upvotes: 5,
+      downvotes: 3,
+    },
+    {
+      title: "The Growth Corner",
+      status: "active",
+      description:
+        "Set up a small corner with plants, motivational quotes, and a “Weekly Achievement Board.” Students can post their small wins — like completing an assignment, helping a classmate, or improving test scores. ",
+      name: "Vivek",
+      upvotes: 4,
+      downvotes: 8,
+    },
+    {
+      title: "The Innovation Zone",
+      status: "active",
+      description:
+        "Designate a section of the classroom for creativity and project work. Include whiteboards, sticky notes, and prototypes of student ideas. Encourage discussions, brainstorming, and mini-presentations to make learning interactive and hands-on.",
+      name: "Shreya",
+      upvotes: 10,
+      downvotes: 2,
+    },
+  ];
 
   const openSignUp = () => {
-    setIsSignUpOpen(true)
-  }
+    setIsSignUpOpen(true);
+  };
+  const closeSignUp = () => {
+    setIsSignUpOpen(false);
+  };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const url = "http://localhost:5000/login";
+    const payload = {
+      email: formData.email,
+      password: formData.password
+    }
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    })
+
+    const data = await response.json();
+    localStorage.setItem("token", data.token)
+    localStorage.setItem("user", JSON.stringify(data.user))
+    console.log(data)
+
+  }
 
   return (
     <div>
@@ -63,20 +90,17 @@ const suggestions = [
             <div className="navbar-links">
               <a href="#home">Home</a>
               <a href="#how-it-works">How It Works</a>
-              <a href="#suggestions"
-              >Suggestions</a>
+              <a href="#suggestions">Suggestions</a>
               <a href="#features">Features</a>
             </div>
             <div className="navbar-actions">
               <button
                 id="wallet"
-                className={`btn ${account ? "btn-connected" : "btn-wallet"}`}
+                className='btn btn-primary'
+                onClick={openSignUp}
               >
-                <div id="connection">
-                  <div>Sign In</div>
-                </div>
+                  <div >Sign In</div>
               </button>
-              
             </div>
           </div>
         </nav>
@@ -91,7 +115,9 @@ const suggestions = [
               A Transparent Suggestion Box
               <span className="gradient-text"> Powered by Blockchain</span>
             </h1>
-            <p className="hero-subtitle">Submit your ideas. Vote on suggestions. Let the community decide.</p>
+            <p className="hero-subtitle">
+              Submit your ideas. Vote on suggestions. Let the community decide.
+            </p>
           </div>
         </section>
 
@@ -119,8 +145,6 @@ const suggestions = [
           </div>
         </section>
 
-                  
-
         {/* Demo Suggestions Preview */}
         <section className="suggestions-preview" id="suggestions">
           <div className="container">
@@ -130,15 +154,21 @@ const suggestions = [
                 <div key={suggestion.id} className="suggestion-card">
                   <div className="suggestion-header">
                     <h3 className="suggestion-title">{suggestion.title}</h3>
-                    <span className={`status status-${suggestion.status.toLowerCase()}`}>{suggestion.status}</span>
+                    <span
+                      className={`status status-${suggestion.status.toLowerCase()}`}
+                    >
+                      {suggestion.status}
+                    </span>
                   </div>
-                  <p className="suggestion-description">{suggestion.description}</p>
+                  <p className="suggestion-description">
+                    {suggestion.description}
+                  </p>
                   <div className="suggestion-meta">
                     <span className="proposer">By: {suggestion.name}</span>
                   </div>
                   <div className="suggestion-actions">
                     <div className="votes">
-                      <button className="vote-btn upvote" >
+                      <button className="vote-btn upvote">
                         ↑ {suggestion.upvotes}
                       </button>
                       <button className="vote-btn downvote">
@@ -160,7 +190,9 @@ const suggestions = [
               <div className="feature">
                 <div className="feature-icon">🔒</div>
                 <h3>Immutable Records</h3>
-                <p>Implemented suggestions are permanently stored on blockchain</p>
+                <p>
+                  Implemented suggestions are permanently stored on blockchain
+                </p>
               </div>
               <div className="feature">
                 <div className="feature-icon">⚖️</div>
@@ -212,66 +244,69 @@ const suggestions = [
       </div>
 
       {isSignUpOpen && (
-        <div className="modal-overlay" >
+        <div className="modal-overlay" onClick={closeSignUp}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>Submit Your Suggestion</h2>
-              <button className="close-btn" >
-                ×
-              </button>
+              <h2>User Login</h2>
+              <button className="close-btn" onClick={closeSignUp}>×</button>
             </div>
-            <form  className="suggestion-form">
+
+            <form className="login-form">
               <div className="form-group">
-                <label htmlFor="title">Suggestion Title</label>
+                <label htmlFor="email">Email Address</label>
                 <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  value={formData.title}
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
                   onChange={handleInputChange}
                   required
-                  placeholder="Enter your suggestion title"
+                  placeholder="Enter your email"
                 />
               </div>
+
               <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  required
-                  rows="4"
-                  placeholder="Describe your suggestion in detail"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="name">Your Name</label>
+                <label htmlFor="password">Password</label>
                 <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={formData.password}
                   onChange={handleInputChange}
                   required
-                  placeholder="Enter your name"
+                  placeholder="Enter your password"
                 />
               </div>
+
+              <div className="form-group remember-forgot">
+                <label>
+                  <input
+                    type="checkbox"
+                    name="rememberMe"
+                    checked={formData.rememberMe}
+                    onChange={handleInputChange}
+                  />
+                  Remember me
+                </label>
+                <a href="#" className="forgot-link">
+                  Forgot Password?
+                </a>
+              </div>
+
               <div className="form-actions">
-                <button type="button" className="btn btn-secondary"   >
+                <button type="button" className="btn btn-secondary" onClick={closeSignUp}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Submit Suggestion
+                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
+                  Login
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
