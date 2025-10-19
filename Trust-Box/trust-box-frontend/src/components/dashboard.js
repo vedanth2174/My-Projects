@@ -2,38 +2,12 @@
 
 import { useState,useEffect } from "react"
 import "./dashboard.css"
-import logout from "./logout.png"
-import { ethers } from "ethers";
-import contractABI from "./suggestion-box.json"; // ABI from Remix
-
-const contractAddress = "0x932b39bf2be7ff41d07046b987ff08398d33a38a"; 
 
 const Dashboard = () => {
   const [account, setAccount] = useState(null)
-  const [suggestions, setSuggestions] = useState([]);
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        })
-        setAccount(accounts[0])
-        console.log("Connected account:", accounts[0])
-      } catch (error) {
-        console.error("User rejected the request", error)
-      }
-    } else {
-      alert("Please install MetaMask!")
-    }
-  }
+  // const [suggestions, setSuggestions] = useState([]);
 
-  const disconnectWallet = () => {
-    setAccount(null)
-    console.log("Wallet disconnected")
-    localStorage.removeItem("account")
-  }
-
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false)
 
   const [formData, setFormData] = useState({
     title: "",
@@ -41,68 +15,32 @@ const Dashboard = () => {
     name: "",
   })
 
-  // Load all suggestions
-  const loadSuggestions = async () => {
-    if (!window.ethereum) return;
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const contract = new ethers.Contract(contractAddress, contractABI.abi, provider);
-
-    const total = await contract.getTotalSuggestions();
-    let items = [];
-
-    for (let i = 0; i < total; i++) {
-      const [title, description, name, timestamp, upvotes, downvotes, status] =
-        await contract.getSuggestion(i);
-
-      items.push({
-        id: i,
-        title,
-        description,
-        name,
-        timestamp: new Date(Number(timestamp) * 1000).toLocaleString(),
-        upvotes: Number(upvotes),
-        downvotes: Number(downvotes),
-        status
-      });
+const suggestions = [
+  {title: "The Knowledge Wall",
+    status: "active",
+    description: "Dedicate one wall to display key concepts, quotes, and visual aids related to the subject. Use colorful charts, mind maps, and student-created infographics. This visual learning corner keeps students inspired and helps in quick revision before exams.",
+    name: "Vedant",
+    upvotes: 5,
+    downvotes: 3,
+  },
+  {title: "The Growth Corner",
+    status: "active",
+    description: "Set up a small corner with plants, motivational quotes, and a “Weekly Achievement Board.” Students can post their small wins — like completing an assignment, helping a classmate, or improving test scores. It promotes positivity and teamwork.",
+    name: "Vivek",
+    upvotes: 5,
+    downvotes: 3,
+  },
+  {title: "The Innovation Zone",
+    status: "active",
+    description: "Designate a section of the classroom for creativity and project work. Include whiteboards, sticky notes, and prototypes of student ideas. Encourage discussions, brainstorming, and mini-presentations to make learning interactive and hands-on.",
+    name: "Shreya",
+    upvotes: 5,
+    downvotes: 3,
   }
+]
 
-  setSuggestions(items);
-  console.log("Loaded suggestions:", items);
-};
-
-
-
-
-  useEffect(() => {
-    loadSuggestions();
-  }, []);
-
-  const handleVote = async (id, isUpvote) => {
-    if (!window.ethereum) return;
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
-
-      const tx = await contract.vote(id, isUpvote);
-      await tx.wait();
-
-      alert("Vote submitted!");
-      loadSuggestions(); // refresh list
-    } catch (err) {
-      console.error("Vote error:", err);
-      alert("Voting failed: " + (err.reason || err.message));
-    }
-  };
-
-
-  const openModal = () => {
-    setIsModalOpen(true)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-    setFormData({ title: "", description: "", name: "" })
+  const openSignUp = () => {
+    setIsSignUpOpen(true)
   }
 
   const handleInputChange = (e) => {
@@ -113,45 +51,10 @@ const Dashboard = () => {
     }))
   }
 
-  const [status, setStatus] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const timestamp = new Date().toISOString()
-    console.log("Suggestion submitted:", {
-      ...formData,
-      timestamp,
-    })
-
-    if (!window.ethereum) {
-      alert("MetaMask not detected!");
-      return;
-    }
-
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI.abi, signer);
-
-      const tx = await contract.addSuggestion(
-        formData.title,
-        formData.description,
-        formData.name
-      );
-
-      setStatus("Submitting transaction...");
-      await tx.wait();
-      setStatus("✅ Suggestion submitted to Sepolia blockchain!");
-    } catch (error) {
-      console.error(error);
-      setStatus("❌ Transaction failed");
-    }
-    closeModal()
-  }
 
   return (
     <div>
-      <div className={`main-content ${isModalOpen ? "blurred" : ""}`}>
+      <div className={`main-content   `}>
         <nav className="navbar">
           <div className="navbar-container">
             <div className="navbar-brand">
@@ -161,7 +64,6 @@ const Dashboard = () => {
               <a href="#home">Home</a>
               <a href="#how-it-works">How It Works</a>
               <a href="#suggestions"
-              onClick={loadSuggestions}
               >Suggestions</a>
               <a href="#features">Features</a>
             </div>
@@ -169,17 +71,12 @@ const Dashboard = () => {
               <button
                 id="wallet"
                 className={`btn ${account ? "btn-connected" : "btn-wallet"}`}
-                onClick={account ? disconnectWallet : connectWallet}
               >
                 <div id="connection">
-                  <div>{account ? "Connected" : "Connect Wallet"}</div>
-                  {account && (
-                    <div>
-                      <img src={logout || "/placeholder.svg"} alt="wallet" className="logout" />
-                    </div>
-                  )}
+                  <div>Sign In</div>
                 </div>
               </button>
+              
             </div>
           </div>
         </nav>
@@ -195,12 +92,6 @@ const Dashboard = () => {
               <span className="gradient-text"> Powered by Blockchain</span>
             </h1>
             <p className="hero-subtitle">Submit your ideas. Vote on suggestions. Let the community decide.</p>
-            <div className="hero-buttons">
-              <button className="btn btn-primary" onClick={openModal}>
-                Submit Suggestion
-              </button>
-              <button className="btn btn-secondary">View Suggestions</button>
-            </div>
           </div>
         </section>
 
@@ -230,10 +121,10 @@ const Dashboard = () => {
 
                   
 
-        {/* Live Suggestions Preview */}
+        {/* Demo Suggestions Preview */}
         <section className="suggestions-preview" id="suggestions">
           <div className="container">
-            <h2 className="section-title">Live Suggestions</h2>
+            <h2 className="section-title">Demo Suggestions</h2>
             <div className="suggestions-grid">
               {suggestions.map((suggestion) => (
                 <div key={suggestion.id} className="suggestion-card">
@@ -247,10 +138,10 @@ const Dashboard = () => {
                   </div>
                   <div className="suggestion-actions">
                     <div className="votes">
-                      <button className="vote-btn upvote" onClick={() => handleVote(suggestion.id, "up")}>
+                      <button className="vote-btn upvote" >
                         ↑ {suggestion.upvotes}
                       </button>
-                      <button className="vote-btn downvote" onClick={() => handleVote(suggestion.id, "down")}>
+                      <button className="vote-btn downvote">
                         ↓ {suggestion.downvotes}
                       </button>
                     </div>
@@ -269,7 +160,7 @@ const Dashboard = () => {
               <div className="feature">
                 <div className="feature-icon">🔒</div>
                 <h3>Immutable Records</h3>
-                <p>All suggestions are permanently stored on blockchain</p>
+                <p>Implemented suggestions are permanently stored on blockchain</p>
               </div>
               <div className="feature">
                 <div className="feature-icon">⚖️</div>
@@ -278,7 +169,7 @@ const Dashboard = () => {
               </div>
               <div className="feature">
                 <div className="feature-icon">🌐</div>
-                <h3>IPFS Decentralized Storage</h3>
+                <h3>Decentralized Storage</h3>
                 <p>Distributed storage ensures data availability</p>
               </div>
               <div className="feature">
@@ -320,16 +211,16 @@ const Dashboard = () => {
         </footer>
       </div>
 
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
+      {isSignUpOpen && (
+        <div className="modal-overlay" >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>Submit Your Suggestion</h2>
-              <button className="close-btn" onClick={closeModal}>
+              <button className="close-btn" >
                 ×
               </button>
             </div>
-            <form onSubmit={handleSubmit} className="suggestion-form">
+            <form  className="suggestion-form">
               <div className="form-group">
                 <label htmlFor="title">Suggestion Title</label>
                 <input
@@ -367,7 +258,7 @@ const Dashboard = () => {
                 />
               </div>
               <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                <button type="button" className="btn btn-secondary"   >
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary">
@@ -378,6 +269,7 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
     </div>
   )
 }
