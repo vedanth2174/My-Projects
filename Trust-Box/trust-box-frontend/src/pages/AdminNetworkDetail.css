@@ -1,0 +1,323 @@
+.admin-network-detail-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+}
+
+.admin-network-detail-main {
+  flex: 1;
+  padding: 3rem 0;
+}
+
+.admin-network-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #111;
+  border-color: #555;
+}
+
+.network-info-section {
+  margin-bottom: 3rem;
+}
+
+.network-info-header {
+  margin-bottom: 2rem;
+}
+
+.network-info-header h1 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.network-info-header p {
+  color: #999;
+  margin: 0;
+}
+
+.network-stats-bar {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #111;
+  border: 1px solid #222;
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.suggestions-section {
+  margin-top: 2rem;
+}
+
+.tabs-container {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #222;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  color: #999;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tab-btn:hover {
+  color: #fff;
+}
+
+.tab-btn.active {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-suggestion-card {
+  background-color: #111;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: all 0.2s;
+}
+
+.admin-suggestion-card:hover {
+  border-color: #333;
+}
+
+.suggestion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.suggestion-header h3 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.suggestion-meta {
+  color: #666;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.suggestion-votes {
+  display: flex;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.vote-count {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.vote-count.upvote {
+  color: #4caf50;
+}
+
+.vote-count.downvote {
+  color: #f44336;
+}
+
+.suggestion-description {
+  color: #ccc;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.6;
+}
+
+.suggestion-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.suggestion-progress {
+  flex: 1;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #222;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  transition: width 0.3s;
+}
+
+.progress-text {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.approve-btn,
+.implement-btn {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.approve-btn:hover,
+.implement-btn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.implement-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #000;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.tx-hash {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4caf50;
+  font-size: 0.85rem;
+  font-family: monospace;
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.empty-suggestions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-suggestions h3 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-suggestions p {
+  color: #999;
+  margin: 0;
+  max-width: 500px;
+}
+
+@media (max-width: 768px) {
+  .admin-network-detail-container {
+    padding: 0 1rem;
+  }
+
+  .admin-network-detail-main {
+    padding: 2rem 0;
+  }
+
+  .network-stats-bar {
+    gap: 1rem;
+  }
+
+  .stat-box {
+    min-width: calc(50% - 0.5rem);
+  }
+
+  .tabs-container {
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .suggestion-header {
+    flex-direction: column;
+  }
+
+  .suggestion-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .approve-btn,
+  .implement-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

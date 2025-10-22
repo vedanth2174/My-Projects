@@ -1,0 +1,187 @@
+.suggestion-card {
+  background-color: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.suggestion-card:hover {
+  border-color: #333;
+}
+
+.suggestion-header {
+  margin-bottom: 1.5rem;
+}
+
+.suggestion-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.suggestion-title-section h3 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+.suggestion-status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.suggestion-meta {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.85rem;
+}
+
+.suggestion-author {
+  color: #999;
+}
+
+.suggestion-date {
+  color: #666;
+}
+
+.suggestion-description {
+  color: #ccc;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.voting-section {
+  padding-top: 1.5rem;
+  border-top: 1px solid #222;
+}
+
+.vote-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.vote-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  color: #999;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.vote-btn:not(:disabled):hover {
+  border-color: #555;
+  background-color: #222;
+}
+
+.vote-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.vote-btn.upvote.active {
+  background-color: #1b4d1b;
+  border-color: #4caf50;
+  color: #4caf50;
+}
+
+.vote-btn.downvote.active {
+  background-color: #4d1b1b;
+  border-color: #f44336;
+  color: #f44336;
+}
+
+.vote-progress {
+  background-color: #0a0a0a;
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #222;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #66bb6a);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.vote-percentage {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.upvote-percent {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.blockchain-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #0a2a0a;
+  border: 1px solid #2d5f2d;
+  border-radius: 6px;
+  color: #4caf50;
+  font-size: 0.9rem;
+}
+
+.blockchain-icon {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .suggestion-card {
+    padding: 1.5rem;
+  }
+
+  .suggestion-title-section {
+    flex-direction: column;
+  }
+
+  .vote-buttons {
+    flex-direction: column;
+  }
+
+  .vote-btn {
+    justify-content: center;
+  }
+}

@@ -561,38 +561,6 @@ section {
   color: var(--accent-primary);
 }
 
-/* Footer */
-.footer {
-  background: var(--primary-bg);
-  border-top: 1px solid var(--border-color);
-  padding: 3rem 0 1rem;
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  gap: 2rem;
-}
-
-.footer-links {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.footer-links a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer-links a:hover {
-  color: var(--accent-primary);
-}
-
 .social-icons {
   display: flex;
   gap: 1rem;
@@ -615,13 +583,6 @@ section {
 .social-icon:hover {
   background: var(--gradient-primary);
   transform: translateY(-2px);
-}
-
-.footer-bottom {
-  text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border-color);
-  color: var(--text-secondary);
 }
 
 /* Responsive Design */
@@ -736,7 +697,7 @@ html {
 /* ===========================
    Modal Overlay & Container
    =========================== */
-.modal-overlay {
+.login-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -750,7 +711,7 @@ html {
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.modal-content {
+.login-modal-content {
   background: rgba(25, 25, 25, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 12px;

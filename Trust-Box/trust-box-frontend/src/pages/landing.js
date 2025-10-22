@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import "./dashboard.css";
+import {Footer} from '../components/Footer'
+import "./landing.css";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
 
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
@@ -75,8 +78,8 @@ const Dashboard = () => {
     const data = await response.json();
     localStorage.setItem("token", data.token)
     localStorage.setItem("user", JSON.stringify(data.user))
-    console.log(data)
-
+    navigate('/dashboard');
+    window.location.reload();
   }
 
   return (
@@ -214,38 +217,12 @@ const Dashboard = () => {
         </section>
 
         {/* Footer */}
-        <footer className="footer">
-          <div className="container">
-            <div className="footer-content">
-              <div className="footer-links">
-                <a href="#home">Home</a>
-                <a href="#submit">Submit Suggestion</a>
-                <a href="#view">View Suggestions</a>
-                <a href="https://github.com/vedanth2174/My-Projects">GitHub</a>
-                <a href="#docs">Docs</a>
-              </div>
-              <div className="social-icons">
-                <a href="#" className="social-icon">
-                  🐦
-                </a>
-                <a href="#" className="social-icon">
-                  💬
-                </a>
-                <a href="#" className="social-icon">
-                  📱
-                </a>
-              </div>
-            </div>
-            <div className="footer-bottom">
-              <p>&copy; 2024 Blockchain Suggestion Box. Powered by Web3.</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
 
       {isSignUpOpen && (
-        <div className="modal-overlay" onClick={closeSignUp}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="login-modal-overlay" onClick={closeSignUp}>
+          <div className="login-modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>User Login</h2>
               <button className="close-btn" onClick={closeSignUp}>×</button>

@@ -1,0 +1,79 @@
+.admin-page-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+}
+
+.admin-page-main {
+  flex: 1;
+  padding: 3rem 0;
+}
+
+.admin-page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.admin-page-header {
+  margin-bottom: 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.admin-page-header h1 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.admin-page-header p {
+  color: #999;
+  margin: 0;
+}
+
+.networks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-state p {
+  color: #999;
+  margin: 0;
+  max-width: 500px;
+}
+
+@media (max-width: 768px) {
+  .admin-page-container {
+    padding: 0 1rem;
+  }
+  
+  .networks-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-page-main {
+    padding: 2rem 0;
+  }
+}
