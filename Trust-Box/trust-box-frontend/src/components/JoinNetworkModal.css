@@ -1,0 +1,307 @@
+.create-network-modal {
+  max-width: 600px;
+  width: 100%;
+}
+
+.wallet-section {
+  margin: 2rem 2rem 1rem;
+  padding: 1.5rem;
+  background-color: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 8px;
+}
+
+.wallet-connect-area {
+  text-align: center;
+}
+
+.wallet-icon {
+  color: #666;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.wallet-connect-area h3 {
+  color: #fff;
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.wallet-connect-area p {
+  color: #999;
+  margin: 0 0 1.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.wallet-connect-btn {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wallet-connect-btn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.wallet-connect-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #000;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wallet-connected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.wallet-info {
+  flex: 1;
+}
+
+.wallet-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #00ff00;
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.wallet-status span {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.wallet-address {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.disconnect-btn {
+  background-color: transparent;
+  color: #ff4444;
+  border: 1px solid #ff4444;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.disconnect-btn:hover {
+  background-color: #ff4444;
+  color: #000;
+}
+
+.error-message {
+  background-color: rgba(255, 68, 68, 0.1);
+  border: 1px solid #ff4444;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 0 2rem 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #ff4444;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.error-message svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.network-form {
+  padding: 0 2rem 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background-color: #0a0a0a;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #666;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #444;
+}
+
+.form-group input:disabled,
+.form-group textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-footer {
+  margin-top: 2rem;
+  border-top: 1px solid #222;
+  padding-top: 1.5rem;
+}
+
+.form-note {
+  color: #999;
+  font-size: 0.85rem;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.5;
+}
+
+.form-note svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancel-btn {
+  background-color: transparent;
+  color: #999;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: #111;
+  border-color: #444;
+  color: #fff;
+}
+
+.submit-btn {
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .wallet-section {
+    margin: 1.5rem 1.5rem 1rem;
+  }
+
+  .error-message {
+    margin: 0 1.5rem 1rem;
+  }
+
+  .network-form {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  .wallet-connected {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .disconnect-btn {
+    width: 100%;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+  }
+}

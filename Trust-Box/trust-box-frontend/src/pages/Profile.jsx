@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
+import { WalletContext } from '../context/WalletContext';
 import './Profile.css';
 
 export const Profile = ({
   onNavigateToDashboard, 
   onNavigateToExplore, 
   onNavigateToAdmin,
-  walletConnected,
-  walletAddress,
   onConnectWallet,
   onDisconnectWallet
 }) => {
+  const { walletConnected, walletAddress, connectWallet, disconnectWallet } = useContext(WalletContext);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState('');
 
@@ -131,7 +131,7 @@ export const Profile = ({
               {!walletConnected ? (
                 <button 
                   className="profile-wallet-connect-btn" 
-                  onClick={handleConnectWallet}
+                  onClick={connectWallet}
                   disabled={isConnecting}
                 >
                   {isConnecting ? (

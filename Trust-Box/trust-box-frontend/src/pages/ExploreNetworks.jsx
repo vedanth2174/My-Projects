@@ -3,12 +3,15 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { NetworkCard } from '../components/NetworkCard';
 import { CreateNetworkModal } from '../components/CreateNetworkModal';
+import { JoinNetworkModal } from '../components/JoinNetworkModal';
 import './ExploreNetworks.css';
 import axios from 'axios';
 
 export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedNetworkId, setSelectedNetworkId] = useState(null);
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const user = JSON.parse(localStorage.getItem("user"));
@@ -39,6 +42,10 @@ export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) 
 
   const handleOpenCreateModal = () => {
     setIsCreateModalOpen(true);
+  };
+  const handleOpenJoinModal = (network_id) => {
+    setSelectedNetworkId(network_id);
+    setIsJoinModalOpen(true);
   };
 
   // Filter networks based on search query
@@ -98,7 +105,7 @@ export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) 
               <NetworkCard
                 key={network.id}
                 network={network}
-                onClick={() => onNavigateToNetwork(network.id)}
+                onClick={()=>handleOpenJoinModal(network.id)}
               />
             ))}
           </div>
@@ -126,6 +133,13 @@ export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) 
         setWalletConnected={setWalletConnected}
         walletAddress={walletAddress}
         setWalletAddress={setWalletAddress}
+        user = {user}
+      />
+      <JoinNetworkModal
+        isOpen={isJoinModalOpen}
+        onClose={() => setIsJoinModalOpen(false)}
+        networkId={selectedNetworkId}
+        user = {user}
       />
     </div>
   );

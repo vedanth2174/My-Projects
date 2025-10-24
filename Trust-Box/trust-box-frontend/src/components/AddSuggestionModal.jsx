@@ -37,6 +37,7 @@ export const AddSuggestionModal = ({ isOpen, onClose, network_id, networkName })
         const data = await response.json();
         if(data){
             console.log("Suggestion saved successfully.")
+            alert(data.message)
             setTitle("");
             setDescription("");
         }

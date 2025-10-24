@@ -39,6 +39,7 @@ const networkSchema = new mongoose.Schema({
   admin: String,
   memberCount: Number,
   suggestionCount: Number,
+  adminWalletAddress: String,
 });
 
 const Network = mongoose.model("network", networkSchema);
@@ -62,6 +63,162 @@ const connectionSchema = new mongoose.Schema({
 });
 
 const Connection = mongoose.model("connection", connectionSchema);
+
+//Update Suggestion Count
+async function updateSuggestionCounts(changedNetworkIds = null) {
+  try {
+    // Fetch all suggestions
+    const allSuggestions = await Suggestion.find();
+
+    // Map: networkId (as Number) -> count
+    const countMap = {};
+
+    allSuggestions.forEach((sugg) => {
+      const netId = Number(sugg.network_id); // ensure type consistency
+      countMap[netId] = (countMap[netId] || 0) + 1;
+    });
+
+    // Determine which network IDs to update
+    let idsToUpdate;
+    if (changedNetworkIds && changedNetworkIds.length > 0) {
+      idsToUpdate = changedNetworkIds.map(Number);
+    } else {
+      idsToUpdate = await Network.find().then((nets) => nets.map((n) => n.id));
+    }
+
+    // Update each network's suggestionCount
+    for (const id of idsToUpdate) {
+      const newCount = countMap[id] || 0;
+      const result = await Network.updateOne(
+        { id },
+        { $set: { suggestionCount: newCount } }
+      );
+
+      if (result.matchedCount === 0) {
+        console.warn(`⚠️ No network found with id ${id}, skipped`);
+      } else {
+        console.log(`Updated network ${id} with suggestionCount = ${newCount}`);
+      }
+    }
+
+    console.log("✅ Suggestion counts updated:", idsToUpdate);
+  } catch (err) {
+    console.error("❌ Error updating suggestion counts:", err);
+  }
+}
+
+// Watch the suggestions collection
+Suggestion.watch().on("change", async (change) => {
+  try {
+    console.log("🔄 Suggestion change detected:", change.operationType);
+
+    // Only handle relevant operations
+    if (["insert", "update", "replace", "delete"].includes(change.operationType)) {
+      let affectedNetworkIds = null;
+
+      // Insert or replace: get network_id from the new document
+      if (change.operationType === "insert" || change.operationType === "replace") {
+        affectedNetworkIds = [Number(change.fullDocument?.network_id)];
+      }
+
+      // Update: get network_id if changed
+      if (change.operationType === "update" && change.updateDescription?.updatedFields?.network_id) {
+        affectedNetworkIds = [Number(change.updateDescription.updatedFields.network_id)];
+      }
+
+      // Delete: fallback to recalc all networks
+      if (change.operationType === "delete") {
+        affectedNetworkIds = null; // recalc all suggestion counts
+      }
+
+      // Update suggestion counts
+      await updateSuggestionCounts(affectedNetworkIds);
+    }
+  } catch (err) {
+    console.error("❌ Error processing suggestion change:", err);
+  }
+});
+
+
+//Update Member Count
+async function updateMemberCounts(changedNetworkIds = null) {
+  try {
+    // Fetch all connections
+    const allConnections = await Connection.find();
+
+    // Map: networkId (as Number) -> count
+    const countMap = {};
+
+    allConnections.forEach((conn) => {
+      conn.connections.forEach((netId) => {
+        const idNum = Number(netId); // ensure type consistency
+        countMap[idNum] = (countMap[idNum] || 0) + 1;
+      });
+    });
+
+    // Determine which network IDs to update
+    let idsToUpdate;
+    if (changedNetworkIds && changedNetworkIds.length > 0) {
+      idsToUpdate = changedNetworkIds.map(Number); // ensure number type
+    } else {
+      idsToUpdate = await Network.find().then(nets => nets.map(n => n.id));
+    }
+
+    // Update each network's memberCount
+    for (const id of idsToUpdate) {
+      const newCount = countMap[id] || 0;
+      const result = await Network.updateOne({ id }, { $set: { memberCount: newCount } });
+
+      if (result.matchedCount === 0) {
+        console.warn(`⚠️ No network found with id ${id}, skipped`);
+      } else {
+        console.log(`Updated network ${id} with memberCount = ${newCount}`);
+      }
+    }
+
+    console.log("✅ Member counts updated:", idsToUpdate);
+  } catch (err) {
+    console.error("❌ Error updating member counts:", err);
+  }
+}
+
+
+// --- Watch for real-time changes in connection collection ---
+// Make sure your watch includes fullDocumentBeforeChange option
+// Watch the connections collection
+Connection.watch().on("change", async (change) => {
+  try {
+    console.log("🔄 Change detected:", change.operationType);
+
+    // Only handle relevant operation types
+    if (["insert", "update", "replace", "delete"].includes(change.operationType)) {
+      let affectedNetworkIds = null;
+
+      // Insert or replace: get connections from the new document
+      if (change.operationType === "insert" || change.operationType === "replace") {
+        affectedNetworkIds = change.fullDocument?.connections || null;
+      }
+
+      // Update: get connections that were updated
+      if (change.operationType === "update" && change.updateDescription?.updatedFields?.connections) {
+        affectedNetworkIds = change.updateDescription.updatedFields.connections;
+      }
+
+      // Delete: fallback to recalc all member counts
+      if (change.operationType === "delete") {
+        affectedNetworkIds = null; // null will indicate full recalc
+      }
+
+      // Update member counts
+      await updateMemberCounts(affectedNetworkIds);
+      console.log("✅ Member counts updated", affectedNetworkIds || "All networks");
+    }
+  } catch (err) {
+    console.error("Error processing change stream:", err);
+  }
+});
+
+
 
 app.post("/register", async (req, res) => {
   try {
@@ -113,7 +270,66 @@ app.post("/login", async (req, res) => {
   }
 });
 
-// add suggestion
+//create network
+app.post("/create-network", async (req, res) => {
+  try {
+    const {
+      id,
+      name,
+      description,
+      admin,
+      memberCount,
+      suggestionCount,
+      adminWalletAddress,
+    } = req.body;
+    const existingNetwork = await Network.findOne({ name });
+    if (existingNetwork) {
+      res.json({ message: "Network name already taken" });
+    } else {
+      const newNetwork = new Network({
+        id,
+        name,
+        description,
+        admin,
+        memberCount,
+        suggestionCount,
+        adminWalletAddress,
+      });
+
+      //save new network
+      await newNetwork.save();
+      res.json({message:"Network created successfully"})
+    }
+  } catch (err) {
+    console.error("Error creating new network: ", err);
+  }
+});
+
+//Join Network
+app.post("/join-network", async (req, res) => {
+  try{
+    const {email, network_id} = req.body;
+    const userExist = await Connection.findOne({email});
+    if(!userExist){
+      const newConnection = new Connection({
+        email,
+        connections: [network_id] 
+      });
+
+      await newConnection.save();
+    }
+    const updateConnection = await Connection.findOneAndUpdate(
+      {email},
+      {$addToSet: {connections: network_id} },
+    )
+    res.json({message: `Joined network successfully.`})
+  }catch(err){
+    console.error("Error joining network: ", err)
+    res.json({message: "Error joining network."})
+  }
+})
+
+//add suggestion
 app.post("/add-suggestion", async (req, res) => {
   try {
     const { id, author, date, title, description, status, votes, network_id } =
@@ -130,7 +346,7 @@ app.post("/add-suggestion", async (req, res) => {
     });
     //save suggestion
     await newSuggestion.save();
-    res.json(newSuggestion);
+    res.json({message: "Suggestion added successfully!"})
   } catch (err) {
     console.error("Error adding suggestion: ", err);
   }

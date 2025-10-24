@@ -1,57 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './CreateNetworkModal.css';
+import { WalletContext } from '../context/WalletContext';
 
 export const CreateNetworkModal = ({ 
   isOpen, 
   onClose, 
   onSubmit, 
-  walletConnected, 
-  setWalletConnected,
-  walletAddress,
-  setWalletAddress 
+  user
 }) => {
+  const { walletConnected, walletAddress, connectWallet, disconnectWallet } = useContext(WalletContext);
   const [networkName, setNetworkName] = useState('');
   const [networkDescription, setNetworkDescription] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState('');
 
-  const connectWallet = async () => {
-    setIsConnecting(true);
-    setError('');
 
-    try {
-      // Check if MetaMask is installed
-      if (typeof window.ethereum === 'undefined') {
-        setError('MetaMask is not installed. Please install MetaMask to continue.');
-        setIsConnecting(false);
-        return;
-      }
-
-      // Request account access
-      const accounts = await window.ethereum.request({ 
-        method: 'eth_requestAccounts' 
-      });
-
-      if (accounts.length > 0) {
-        const address = accounts[0];
-        setWalletAddress(address);
-        setWalletConnected(true);
-        console.log('Connected to wallet:', address);
-      }
-    } catch (err) {
-      console.error('Error connecting to MetaMask:', err);
-      setError('Failed to connect to MetaMask. Please try again.');
-    } finally {
-      setIsConnecting(false);
-    }
-  };
-
-  const disconnectWallet = () => {
-    setWalletAddress('');
-    setWalletConnected(false);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!walletConnected) {
@@ -59,17 +23,30 @@ export const CreateNetworkModal = ({
       return;
     }
 
-    if (networkName.trim() && networkDescription.trim()) {
-      onSubmit({
-        name: networkName,
-        description: networkDescription,
-        creator: walletAddress,
-      });
-      
-      // Reset form
-      setNetworkName('');
-      setNetworkDescription('');
-      setError('');
+    const url = "http://localhost:5000/create-network"
+    const payload = {
+      id: Math.floor(100 + Math.random() * 900),
+      name: networkName,
+      description: networkDescription,
+      admin: user.email,
+      memberCount: 0,
+      suggestionCount: 0,
+      adminWalletAddress: walletAddress
+    }
+
+    try{
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+      })
+
+      const data = await response.json();
+      if(data){
+        alert(data.message);
+      }
+    }catch(err){
+      console.error(err)
     }
   };
 
