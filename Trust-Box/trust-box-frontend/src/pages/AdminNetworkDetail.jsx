@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { useNavigate, useParams } from 'react-router-dom';
+import {WalletContext} from '../context/WalletContext'
+import { ethers } from "ethers";
+import {ImplementModal} from "../components/ImplementModal"
+
 import axios from 'axios'
 import './AdminNetworkDetail.css';
 
 export const AdminNetworkDetail = ({ networkId, onBack, onNavigateToDashboard, onNavigateToExplore, onNavigateToAdmin }) => {
     const navigate = useNavigate();
+    const { walletConnected, walletAddress, connectWallet, disconnectWallet } = useContext(WalletContext);
   const user = JSON.parse(localStorage.getItem("user"));
   const { id } = useParams();
   const [network, setNetwork] = useState(null);
   const [activeTab, setActiveTab] = useState('pending');
   const [processingId, setProcessingId] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const [isImplementModalOpen, setIsImplementModalOpen] = useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState();
 
     useEffect(() => {
     const fetchNetworkDetails = async () => {
@@ -52,6 +59,11 @@ export const AdminNetworkDetail = ({ networkId, onBack, onNavigateToDashboard, o
     fetchSuggestions();
   }, []);
 
+  const handleOpenImplementModal = (suggestion) => {
+    setIsImplementModalOpen(true);
+    setSelectedSuggestion(suggestion)
+  };
+
   const handleApproveSuggestion = (suggestionId) => {
     setSuggestions((prev) =>
       prev.map((s) =>
@@ -60,37 +72,6 @@ export const AdminNetworkDetail = ({ networkId, onBack, onNavigateToDashboard, o
     );
   };
 
-  const handleImplementSuggestion = async (suggestionId) => {
-    setProcessingId(suggestionId);
-    
-    // Simulate MetaMask transaction
-    try {
-      // Mock blockchain transaction
-      console.log('Initiating blockchain transaction for suggestion:', suggestionId);
-      
-      // Simulate transaction delay
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      
-      // Generate mock transaction hash
-      const txHash = '0x' + Math.random().toString(16).substr(2, 64);
-      
-      // Update suggestion status to implemented
-      setSuggestions((prev) =>
-        prev.map((s) =>
-          s.id === suggestionId
-            ? { ...s, status: 'implemented', txHash }
-            : s
-        )
-      );
-      
-      console.log('Transaction confirmed! Hash:', txHash);
-    } catch (error) {
-      console.error('Transaction failed:', error);
-      alert('Failed to implement suggestion. Please try again.');
-    } finally {
-      setProcessingId(null);
-    }
-  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -238,7 +219,7 @@ export const AdminNetworkDetail = ({ networkId, onBack, onNavigateToDashboard, o
                     {activeTab === 'approved' && (
                       <button
                         className="implement-btn"
-                        onClick={() => handleImplementSuggestion(suggestion.id)}
+                        onClick={()=>handleOpenImplementModal(suggestion)}
                         disabled={processingId === suggestion.id}
                       >
                         {processingId === suggestion.id ? (
@@ -286,6 +267,13 @@ export const AdminNetworkDetail = ({ networkId, onBack, onNavigateToDashboard, o
       </main>
 
       <Footer />
+
+      <ImplementModal
+              isOpen={isImplementModalOpen}
+              onClose={() => setIsImplementModalOpen(false)}
+              suggestion = {selectedSuggestion}
+              network={network}
+            />
     </div>
   );
 };

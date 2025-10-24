@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import {ethers} from "ethers";
+import fs from "fs";
 
 dotenv.config();
 
@@ -15,6 +17,10 @@ app.use(cors());
 const PORT = 5000;
 const MONGO_URI = process.env.MONGO_URI;
 const jwt_secret = process.env.jwt;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const RPC_URL = process.env.RPC_URL; 
+const SuggestionABI = JSON.parse(fs.readFileSync('./contract/SuggestionStorage.json', 'utf8'));
 
 mongoose
   .connect(MONGO_URI, {
@@ -428,6 +434,38 @@ app.get("/fetch-user-networks/:email", async (req, res) => {
     res.json({ networks_list });
   } catch (err) {
     console.log("Error loading networks: ", err);
+  }
+});
+
+//final suggestion storage on blockchain
+app.post("/implement-suggestion", async (req, res) => {
+  try {
+    const suggestion = req.body;
+
+    // Basic validation
+    if (!suggestion || Object.keys(suggestion).length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "No suggestion data provided",
+      });
+    }
+
+    // Respond with the contract details
+    res.status(200).json({
+      success: true,
+      message: "Contract info ready for frontend to use",
+      contract: {
+        address: CONTRACT_ADDRESS,
+        abi: SuggestionABI.abi, // frontend will use this to interact with contract
+      },
+      suggestion,
+    });
+  } catch (error) {
+    console.error("Error in /implement-suggestion:", error);
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
   }
 });
 
