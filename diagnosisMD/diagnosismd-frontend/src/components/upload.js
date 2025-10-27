@@ -9,7 +9,7 @@ const Upload = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [activeTab, setActiveTab] = useState("generated")
   const [userName] = useState("Dr. Sarah Johnson")
-
+  const [analysisResult, setAnalysisResult] = useState()
   const [dragActive, setDragActive] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [uploadProgress, setUploadProgress] = useState({})
@@ -114,11 +114,69 @@ const Upload = () => {
     setPatientInfo((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Submitting scan analysis request:", { patientInfo, files: uploadedFiles })
-    // Here you would typically send the data to your backend
+  // upload.js
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!uploadedFiles || uploadedFiles.length === 0) {
+    alert("⚠️ Please upload at least one scan before submitting.");
+    return;
   }
+
+  // ✅ Pick the first uploaded file (you can loop later for multiple)
+  const firstFile = uploadedFiles[0].file; // access the real File object
+  if (!(firstFile instanceof File)) {
+    alert("❌ Invalid file type. Please re-upload.");
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("file", firstFile); // must match FastAPI parameter name "file"
+
+    // 🔗 Your public FastAPI ngrok URL
+    const API_URL = "https://unbewitchingly-conservational-chace.ngrok-free.dev/predict";
+
+    console.log("📤 Uploading file:", firstFile.name);
+
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
+    });
+
+    const text = await response.text();
+    console.log("🧾 Raw Response:", text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error("Invalid JSON received from backend: " + text);
+    }
+
+    if (!response.ok) {
+      console.error("❌ Backend Error:", data);
+      alert("Server Error: " + (data.detail ? data.detail[0].msg : "Unknown error"));
+      return;
+    }
+
+    // ✅ If successful, show AI-generated report
+    console.log("✅ AI Report Generated:", data);
+    setAnalysisResult(data);
+
+    alert(`🩻 AI Report Generated Successfully!\n\n${data.report}`);
+  } catch (err) {
+    console.error("❌ Request Failed:", err);
+    alert("Something went wrong while connecting to the API. Please check your server.");
+  }
+};
+
+
+
+
+
+
 
   const formatFileSize = (bytes) => {
     if (bytes === 0) return "0 Bytes"
