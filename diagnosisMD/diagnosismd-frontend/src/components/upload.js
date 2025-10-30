@@ -13,6 +13,7 @@ const Upload = () => {
   const [dragActive, setDragActive] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [uploadProgress, setUploadProgress] = useState({})
+  const [report, setReport] = useState();
   const [patientInfo, setPatientInfo] = useState({
     patientId: "",
     patientName: "",
@@ -124,8 +125,7 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  // ✅ Pick the first uploaded file (you can loop later for multiple)
-  const firstFile = uploadedFiles[0].file; // access the real File object
+  const firstFile = uploadedFiles[0].file;
   if (!(firstFile instanceof File)) {
     alert("❌ Invalid file type. Please re-upload.");
     return;
@@ -133,9 +133,8 @@ const handleSubmit = async (e) => {
 
   try {
     const formData = new FormData();
-    formData.append("file", firstFile); // must match FastAPI parameter name "file"
+    formData.append("file", firstFile);
 
-    // 🔗 Your public FastAPI ngrok URL
     const API_URL = "https://unbewitchingly-conservational-chace.ngrok-free.dev/predict";
 
     console.log("📤 Uploading file:", firstFile.name);
@@ -145,32 +144,32 @@ const handleSubmit = async (e) => {
       body: formData,
     });
 
-    const text = await response.text();
-    console.log("🧾 Raw Response:", text);
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch {
-      throw new Error("Invalid JSON received from backend: " + text);
-    }
-
     if (!response.ok) {
-      console.error("❌ Backend Error:", data);
-      alert("Server Error: " + (data.detail ? data.detail[0].msg : "Unknown error"));
+      const errorText = await response.text();
+      console.error("❌ Backend Error:", errorText);
+      alert("Server Error: " + errorText);
       return;
     }
 
-    // ✅ If successful, show AI-generated report
-    console.log("✅ AI Report Generated:", data);
-    setAnalysisResult(data);
+    const blob = await response.blob();
 
-    alert(`🩻 AI Report Generated Successfully!\n\n${data.report}`);
+    // ⚡ Trigger download
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "xray_report.pdf";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    alert("🩻 AI Report PDF generated and downloaded successfully!");
   } catch (err) {
     console.error("❌ Request Failed:", err);
-    alert("Something went wrong while connecting to the API. Please check your server.");
+    alert("Something went wrong while connecting to the API.");
   }
 };
+
+
 
 
 
@@ -443,40 +442,6 @@ const handleSubmit = async (e) => {
                 )}
               </section>
 
-              {/* AI Analysis Options */}
-              <section className="analysis-options-section">
-                <h2>AI Analysis Options</h2>
-                <div className="analysis-options">
-                  <div className="option-card">
-                    <div className="option-header">
-                      <h3>🤖 Standard AI Analysis</h3>
-                      <span className="option-badge free">Free</span>
-                    </div>
-                    <p>
-                      Comprehensive AI-powered analysis with findings detection and preliminary diagnosis suggestions.
-                    </p>
-                    <ul>
-                      <li>Automated findings detection</li>
-                      <li>Preliminary diagnosis suggestions</li>
-                      <li>Confidence scoring</li>
-                      <li>Report generation</li>
-                    </ul>
-                  </div>
-                  <div className="option-card">
-                    <div className="option-header">
-                      <h3>⚡ Priority Analysis</h3>
-                      <span className="option-badge premium">Premium</span>
-                    </div>
-                    <p>Expedited processing with advanced AI models and specialist consultation recommendations.</p>
-                    <ul>
-                      <li>Faster processing (under 5 minutes)</li>
-                      <li>Advanced AI models</li>
-                      <li>Specialist consultation recommendations</li>
-                      <li>Treatment pathway suggestions</li>
-                    </ul>
-                  </div>
-                </div>
-              </section>
 
               {/* Submit Section */}
               <section className="submit-section">

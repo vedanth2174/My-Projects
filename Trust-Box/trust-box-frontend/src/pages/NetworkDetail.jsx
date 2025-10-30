@@ -225,6 +225,7 @@ export const NetworkDetail = () => {
                   key={suggestion.id}
                   suggestion={suggestion}
                   onVote={handleVote}
+                  network = {network}
                 />
               ))}
             </div>

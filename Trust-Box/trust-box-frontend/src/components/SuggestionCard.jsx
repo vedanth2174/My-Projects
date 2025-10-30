@@ -1,11 +1,10 @@
 import React from 'react';
 import './SuggestionCard.css';
 
-export const SuggestionCard = ({ suggestion, onVote }) => {
+export const SuggestionCard = ({ suggestion, onVote, network }) => {
   const totalVotes = suggestion.votes ;
   const upvotePercentage = totalVotes > 0 ? (suggestion.votes / 100) * 100 : 0;
   const voteProgress = totalVotes > 0 ? (suggestion.votes / 100) * 100 : 0;
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'Approved':
@@ -55,7 +54,7 @@ export const SuggestionCard = ({ suggestion, onVote }) => {
         <div className="vote-progress">
           <div className="progress-info">
             <span>Progress to Implementation</span>
-            <span>{suggestion.votes} / 100 votes</span>
+            <span>{suggestion.votes} / {network?.memberCount} votes</span>
           </div>
           <div className="progress-bar">
             <div 

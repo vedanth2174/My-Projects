@@ -17,7 +17,15 @@ export const ImplementModal = ({
   };
 
   const handleImplementSuggestion = async () => {
-    
+    const payload = {
+      suggestion_ID: suggestion.id,
+      suggestion_Title: suggestion.title,
+      suggestion_Description: suggestion.description,
+      suggestion_Author: suggestion.author,
+      suggestion_Votes: suggestion.votes,
+      network_Name: network.name
+    }
+    // const url = 
   };
 
 
