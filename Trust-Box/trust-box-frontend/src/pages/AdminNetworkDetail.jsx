@@ -26,7 +26,7 @@ export const AdminNetworkDetail = ({ networkId, onBack, onNavigateToDashboard, o
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/network-details/${id}`,
+          `https://reverse-auction-m5yj.onrender.com/network-details/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }

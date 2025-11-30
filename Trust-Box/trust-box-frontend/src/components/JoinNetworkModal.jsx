@@ -16,7 +16,7 @@ export const JoinNetworkModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    const url = "http://localhost:5000/join-network"
+    const url = "https://reverse-auction-m5yj.onrender.com/join-network"
     const payload = {
         email: user.email,
         network_id: networkId
