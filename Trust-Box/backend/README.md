@@ -15,6 +15,9 @@
 
 ### 🔒 Smart contract deployed on Sepolia Testnet
 ## Live Demo Link : trust-box-olive.vercel.app
+### Demo User Credentials
+ - email = test@example.com
+ - password = 123456
 ## 🚀 Features
 ### Frontend
  - React.js
