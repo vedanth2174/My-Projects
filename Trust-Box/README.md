@@ -2,6 +2,10 @@
 ## Trust-Box is a decentralized suggestion box built using Ethereum (Sepolia Testnet), Solidity, React.js, and ethers.js.
 ## It allows users to connect their MetaMask wallet, submit suggestions, and view all suggestions stored on the blockchain, ensuring full transparency, immutability, and trust.
 ## Live Demo Link : https://trust-box-olive.vercel.app
+### Demo User Credentials
+ - email = test@example.com
+ - password = 123456
+
 ## 🚀 Features
 ### 🔗 Blockchain-powered suggestion submission
 
@@ -14,10 +18,6 @@
 ### 🧩 Frontend built with React
 
 ### 🔒 Smart contract deployed on Sepolia Testnet
-## Live Demo Link : trust-box-olive.vercel.app
-### Demo User Credentials
- - email = test@example.com
- - password = 123456
 ## 🚀 Features
 ### Frontend
  - React.js
