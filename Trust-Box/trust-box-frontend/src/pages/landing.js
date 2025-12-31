@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {Footer} from '../components/Footer'
+import { Footer } from "../components/Footer";
 import "./landing.css";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [authMode, setAuthMode] = useState("login"); // "login" | "signup"
 
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
 
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
@@ -63,25 +65,55 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const url = "https://reverse-auction-m5yj.onrender.com/login";
-    const payload = {
-      email: formData.email,
-      password: formData.password
+    try {
+      const url =
+        authMode === "login"
+          ? "http://localhost:5000/login"
+          : "http://localhost:5000/register";
+
+      const payload =
+        authMode === "login"
+          ? {
+              email: formData.email,
+              password: formData.password,
+            }
+          : {
+              name: formData.name,
+              email: formData.email,
+              password: formData.password,
+            };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Something went wrong");
+        return;
+      }
+
+      if (authMode === "login") {
+        // ✅ LOGIN FLOW
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        alert("Login successful!");
+        navigate("/dashboard");
+        window.location.reload();
+      } else {
+        // ✅ REGISTER FLOW
+        alert("Registration successful! Please login.");
+        setAuthMode("login");
+        setFormData({ name: "", email: "", password: "" });
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server error");
     }
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(payload)
-    })
-
-    const data = await response.json();
-    alert("Login successfully!");
-    localStorage.setItem("token", data.token)
-    localStorage.setItem("user", JSON.stringify(data.user))
-    navigate('/dashboard');
-    window.location.reload();
-  }
+  };
 
   return (
     <div>
@@ -100,10 +132,10 @@ const Dashboard = () => {
             <div className="navbar-actions">
               <button
                 id="wallet"
-                className='btn btn-primary'
+                className="btn btn-primary"
                 onClick={openSignUp}
               >
-                  <div >Sign In</div>
+                <div>Sign In</div>
               </button>
             </div>
           </div>
@@ -223,13 +255,33 @@ const Dashboard = () => {
 
       {isSignUpOpen && (
         <div className="login-modal-overlay" onClick={closeSignUp}>
-          <div className="login-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="login-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="modal-header">
-              <h2>User Login</h2>
-              <button className="close-btn" onClick={closeSignUp}>×</button>
+              <h2>{authMode === "login" ? "User Login" : "User Sign Up"}</h2>
+              <button className="close-btn" onClick={closeSignUp}>
+                ×
+              </button>
             </div>
 
-            <form className="login-form">
+            <form className="login-form" onSubmit={handleSubmit}>
+              {authMode === "signup" && (
+                <div className="form-group">
+                  <label htmlFor="name">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter your name"
+                  />
+                </div>
+              )}
+
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
                 <input
@@ -256,27 +308,40 @@ const Dashboard = () => {
                 />
               </div>
 
-              <div className="form-group remember-forgot">
-                <label>
-                  <input
-                    type="checkbox"
-                    name="rememberMe"
-                    checked={formData.rememberMe}
-                    onChange={handleInputChange}
-                  />
-                  Remember me
-                </label>
-                <a href="#" className="forgot-link">
-                  Forgot Password?
-                </a>
+              <div className="form-group auth-switch">
+                {authMode === "login" ? (
+                  <p>
+                    Don’t have an account?{" "}
+                    <span
+                      className="auth-link"
+                      onClick={() => setAuthMode("signup")}
+                    >
+                      Sign up
+                    </span>
+                  </p>
+                ) : (
+                  <p>
+                    Already have an account?{" "}
+                    <span
+                      className="auth-link"
+                      onClick={() => setAuthMode("login")}
+                    >
+                      Sign in
+                    </span>
+                  </p>
+                )}
               </div>
 
               <div className="form-actions">
-                <button type="button" className="btn btn-secondary" onClick={closeSignUp}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closeSignUp}
+                >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit}>
-                  Login
+                <button type="submit" className="btn btn-primary">
+                  {authMode === "login" ? "Login" : "Sign Up"}
                 </button>
               </div>
             </form>

@@ -34,9 +34,6 @@ export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) 
   }, []);
 
   const handleCreateNetwork = (networkData) => {
-    console.log('Creating network:', networkData);
-    // Here you would typically create the network on blockchain
-    // For now, just close the modal
     setIsCreateModalOpen(false);
   };
 

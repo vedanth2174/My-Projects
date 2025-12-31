@@ -62,6 +62,15 @@ const connectionSchema = new mongoose.Schema({
 
 const Connection = mongoose.model("connection", connectionSchema);
 
+const voteSchema = new mongoose.Schema({
+  email: String,
+  suggestionId: Number,
+});
+
+const Vote = mongoose.model("vote", voteSchema);
+
+Vote.collection.createIndex({ email: 1, suggestionId: 1 }, { unique: true });
+
 //Update Suggestion Count
 async function updateSuggestionCounts(changedNetworkIds = null) {
   try {
@@ -111,17 +120,27 @@ Suggestion.watch().on("change", async (change) => {
     console.log("🔄 Suggestion change detected:", change.operationType);
 
     // Only handle relevant operations
-    if (["insert", "update", "replace", "delete"].includes(change.operationType)) {
+    if (
+      ["insert", "update", "replace", "delete"].includes(change.operationType)
+    ) {
       let affectedNetworkIds = null;
 
       // Insert or replace: get network_id from the new document
-      if (change.operationType === "insert" || change.operationType === "replace") {
+      if (
+        change.operationType === "insert" ||
+        change.operationType === "replace"
+      ) {
         affectedNetworkIds = [Number(change.fullDocument?.network_id)];
       }
 
       // Update: get network_id if changed
-      if (change.operationType === "update" && change.updateDescription?.updatedFields?.network_id) {
-        affectedNetworkIds = [Number(change.updateDescription.updatedFields.network_id)];
+      if (
+        change.operationType === "update" &&
+        change.updateDescription?.updatedFields?.network_id
+      ) {
+        affectedNetworkIds = [
+          Number(change.updateDescription.updatedFields.network_id),
+        ];
       }
 
       // Delete: fallback to recalc all networks
@@ -136,7 +155,6 @@ Suggestion.watch().on("change", async (change) => {
     console.error("❌ Error processing suggestion change:", err);
   }
 });
-
 
 //Update Member Count
 async function updateMemberCounts(changedNetworkIds = null) {
@@ -159,13 +177,16 @@ async function updateMemberCounts(changedNetworkIds = null) {
     if (changedNetworkIds && changedNetworkIds.length > 0) {
       idsToUpdate = changedNetworkIds.map(Number); // ensure number type
     } else {
-      idsToUpdate = await Network.find().then(nets => nets.map(n => n.id));
+      idsToUpdate = await Network.find().then((nets) => nets.map((n) => n.id));
     }
 
     // Update each network's memberCount
     for (const id of idsToUpdate) {
       const newCount = countMap[id] || 0;
-      const result = await Network.updateOne({ id }, { $set: { memberCount: newCount } });
+      const result = await Network.updateOne(
+        { id },
+        { $set: { memberCount: newCount } }
+      );
 
       if (result.matchedCount === 0) {
         console.warn(`⚠️ No network found with id ${id}, skipped`);
@@ -180,7 +201,6 @@ async function updateMemberCounts(changedNetworkIds = null) {
   }
 }
 
-
 // --- Watch for real-time changes in connection collection ---
 // Make sure your watch includes fullDocumentBeforeChange option
 // Watch the connections collection
@@ -189,16 +209,24 @@ Connection.watch().on("change", async (change) => {
     console.log("🔄 Change detected:", change.operationType);
 
     // Only handle relevant operation types
-    if (["insert", "update", "replace", "delete"].includes(change.operationType)) {
+    if (
+      ["insert", "update", "replace", "delete"].includes(change.operationType)
+    ) {
       let affectedNetworkIds = null;
 
       // Insert or replace: get connections from the new document
-      if (change.operationType === "insert" || change.operationType === "replace") {
+      if (
+        change.operationType === "insert" ||
+        change.operationType === "replace"
+      ) {
         affectedNetworkIds = change.fullDocument?.connections || null;
       }
 
       // Update: get connections that were updated
-      if (change.operationType === "update" && change.updateDescription?.updatedFields?.connections) {
+      if (
+        change.operationType === "update" &&
+        change.updateDescription?.updatedFields?.connections
+      ) {
         affectedNetworkIds = change.updateDescription.updatedFields.connections;
       }
 
@@ -209,14 +237,15 @@ Connection.watch().on("change", async (change) => {
 
       // Update member counts
       await updateMemberCounts(affectedNetworkIds);
-      console.log("✅ Member counts updated", affectedNetworkIds || "All networks");
+      console.log(
+        "✅ Member counts updated",
+        affectedNetworkIds || "All networks"
+      );
     }
   } catch (err) {
     console.error("Error processing change stream:", err);
   }
 });
-
-
 
 app.post("/register", async (req, res) => {
   try {
@@ -265,7 +294,7 @@ app.post("/login", async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
-    res.json(err)
+    res.json(err);
   }
 });
 
@@ -297,7 +326,7 @@ app.post("/create-network", async (req, res) => {
 
       //save new network
       await newNetwork.save();
-      res.json({message:"Network created successfully"})
+      res.json({ message: "Network created successfully" });
     }
   } catch (err) {
     console.error("Error creating new network: ", err);
@@ -306,27 +335,27 @@ app.post("/create-network", async (req, res) => {
 
 //Join Network
 app.post("/join-network", async (req, res) => {
-  try{
-    const {email, network_id} = req.body;
-    const userExist = await Connection.findOne({email});
-    if(!userExist){
+  try {
+    const { email, network_id } = req.body;
+    const userExist = await Connection.findOne({ email });
+    if (!userExist) {
       const newConnection = new Connection({
         email,
-        connections: [network_id] 
+        connections: [network_id],
       });
 
       await newConnection.save();
     }
     const updateConnection = await Connection.findOneAndUpdate(
-      {email},
-      {$addToSet: {connections: network_id} },
-    )
-    res.json({message: `Joined network successfully.`})
-  }catch(err){
-    console.error("Error joining network: ", err)
-    res.json({message: "Error joining network."})
+      { email },
+      { $addToSet: { connections: network_id } }
+    );
+    res.json({ message: `Joined network successfully.` });
+  } catch (err) {
+    console.error("Error joining network: ", err);
+    res.json({ message: "Error joining network." });
   }
-})
+});
 
 //add suggestion
 app.post("/add-suggestion", async (req, res) => {
@@ -345,9 +374,60 @@ app.post("/add-suggestion", async (req, res) => {
     });
     //save suggestion
     await newSuggestion.save();
-    res.json({message: "Suggestion added successfully!"})
+    res.json({ message: "Suggestion added successfully!" });
   } catch (err) {
     console.error("Error adding suggestion: ", err);
+  }
+});
+
+//check if voted
+app.get("/has-voted", async (req, res) => {
+  try {
+    const { email, suggestionId } = req.query;
+
+    const vote = await Vote.findOne({
+      email, // ✅ FIX
+      suggestionId: Number(suggestionId),
+    });
+
+    res.json({ hasVoted: !!vote });
+  } catch (err) {
+    console.error("Has voted error:", err);
+    res.status(500).json({ message: "Error checking vote" });
+  }
+});
+
+//vote suggestion
+app.post("/vote-suggestion", async (req, res) => {
+  try {
+    const { email, suggestionId } = req.body;
+
+    await Vote.create({
+      email, // ✅ FIX
+      suggestionId: Number(suggestionId),
+    });
+
+    const updatedSuggestion = await Suggestion.findOneAndUpdate(
+      { id: Number(suggestionId) }, // ✅ ensure Number
+      { $inc: { votes: 1 } },
+      { new: true }
+    );
+
+    if (!updatedSuggestion) {
+      return res.status(404).json({ message: "Suggestion not found" });
+    }
+
+    res.json({
+      message: "Vote added successfully",
+      votes: updatedSuggestion.votes,
+    });
+  } catch (err) {
+    if (err.code === 11000) {
+      return res.status(400).json({ message: "You have already voted" });
+    }
+
+    console.error("Voting error:", err);
+    res.status(500).json({ message: "Error voting on suggestion" });
   }
 });
 
@@ -430,6 +510,90 @@ app.get("/fetch-user-networks/:email", async (req, res) => {
   }
 });
 
+//approve suggestion
+app.post("/approve-suggestion", async (req, res) => {
+  try {
+    const { suggestionId } = req.body;
+
+    // 1️⃣ Fetch suggestion
+    const suggestion = await Suggestion.findOne({
+      id: Number(suggestionId),
+      status: "Pending",
+    });
+
+    if (!suggestion) {
+      return res.status(404).json({
+        message: "Suggestion not found or already approved",
+      });
+    }
+
+    // 2️⃣ Fetch network (suggestion belongs to network)
+    const network = await Network.findOne({
+      id: suggestion.networkId,
+    });
+
+    if (!network) {
+      return res.status(404).json({
+        message: "Network not found",
+      });
+    }
+
+    // 3️⃣ Majority check
+    const requiredVotes = Math.floor(network.memberCount / 2) + 1;
+
+    if (suggestion.votes < requiredVotes) {
+      return res.status(400).json({
+        message: `Majority not reached. Needs ${requiredVotes} votes.`,
+      });
+    }
+
+    // 4️⃣ Approve suggestion
+    suggestion.status = "Approved";
+    await suggestion.save();
+
+    res.json({
+      message: "Suggestion approved successfully",
+      suggestion,
+    });
+  } catch (err) {
+    console.error("Approve suggestion error:", err);
+    res.status(500).json({ message: "Error approving suggestion" });
+  }
+});
+
+
+//implement suggestion
+// Mark suggestion as Implemented (Approved → Implemented)
+app.post("/implement-suggestion", async (req, res) => {
+  try {
+    const { suggestionId, txHash } = req.body;
+
+    const updatedSuggestion = await Suggestion.findOneAndUpdate(
+      { id: Number(suggestionId), status: "Approved" },
+      {
+        $set: {
+          status: "Implemented",
+          txHash: txHash, // store blockchain tx
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedSuggestion) {
+      return res.status(404).json({
+        message: "Suggestion not found or not approved",
+      });
+    }
+
+    res.json({
+      message: "Suggestion implemented successfully",
+      suggestion: updatedSuggestion,
+    });
+  } catch (err) {
+    console.error("Implement suggestion error:", err);
+    res.status(500).json({ message: "Error implementing suggestion" });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server live on port number ${PORT}`);

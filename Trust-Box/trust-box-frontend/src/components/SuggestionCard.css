@@ -185,3 +185,13 @@
     justify-content: center;
   }
 }
+
+.vote-btn.disabled-black {
+  background-color: #2e2e2e;
+  color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.vote-btn.disabled-black svg {
+  fill: #9e9e9e;
+}

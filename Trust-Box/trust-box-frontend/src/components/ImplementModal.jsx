@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import axios from "axios";
 import { ethers } from "ethers";
 import "./CreateNetworkModal.css";
 import { WalletContext } from "../context/WalletContext";
@@ -9,6 +10,8 @@ export const ImplementModal = ({
   onClose,
   network,
   suggestion,
+  onImplemented,
+  setProcessingId,
   user,
 }) => {
   const { walletConnected, walletAddress, connectWallet, disconnectWallet } =
@@ -21,38 +24,47 @@ export const ImplementModal = ({
   const handleImplementSuggestion = async (e) => {
     e.preventDefault();
 
+
     try {
       if (!window.ethereum) throw new Error("MetaMask not found");
 
-      // Connect to MetaMask
+      setProcessingId(suggestion.id);
+
       const provider = new ethers.BrowserProvider(window.ethereum);
       const signer = await provider.getSigner();
 
-      // ✅ Proper ABI extraction (your JSON has { abi: [...], data: ... })
       const abi = SuggestionStorageABI.abi;
-      const contractAddress = "0x55a7f09bb948e1d6ae68f494ab84c760f677869e";
-
-      // ✅ Create contract instance
+      const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS;
       const contract = new ethers.Contract(contractAddress, abi, signer);
 
-      console.log("Contract loaded:", contract);
-
-      // ✅ Call the function on smart contract
       const tx = await contract.storeSuggestion(
         suggestion.id,
         suggestion.title,
         suggestion.description,
-        network.id, // or network.id if you have one
+        network.id,
         suggestion.votes
       );
 
-      console.log("Transaction hash:", tx.hash);
       await tx.wait();
 
-      alert("✅ Suggestion stored successfully!");
-    } catch (error) {
-      console.error("❌ Failed to store suggestion:", error);
-      alert("Failed to store suggestion: " + (error.reason || error.message));
+      // ✅ Call backend
+      const response = await axios.post(
+        "http://localhost:5000/implement-suggestion",
+        {
+          suggestionId: suggestion.id,
+          txHash: tx.hash,
+        }
+      );
+
+      // ✅ Notify parent
+      onImplemented(response.data.suggestion);
+
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert(err.reason || err.message);
+    } finally {
+      setProcessingId(null);
     }
   };
 

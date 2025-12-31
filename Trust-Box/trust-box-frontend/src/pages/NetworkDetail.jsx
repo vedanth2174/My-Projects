@@ -57,58 +57,39 @@ export const NetworkDetail = () => {
     navigate("/dashboard");
   };
 
-  const handleVote = (suggestionId, voteType) => {
-    setSuggestions((prev) =>
-      prev?.map((suggestion) => {
-        if (suggestion.id === suggestionId) {
-          const wasUpvote = suggestion.userVote === "up";
-          const wasDownvote = suggestion.userVote === "down";
-          const isUpvote = voteType === "up";
+  const handleVote = async (suggestionId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
 
-          let newUpvotes = suggestion.upvotes;
-          let newDownvotes = suggestion.downvotes;
+    try {
+      const res = await fetch("http://localhost:5000/vote-suggestion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          suggestionId,
+        }),
+      });
 
-          // Remove previous vote if exists
-          if (wasUpvote) newUpvotes--;
-          if (wasDownvote) newDownvotes--;
+      const data = await res.json();
 
-          // Add new vote if different from previous
-          if (suggestion.userVote !== voteType) {
-            if (isUpvote) newUpvotes++;
-            else newDownvotes++;
-          }
-
-          const newUserVote =
-            suggestion.userVote === voteType ? null : voteType;
-
-          // Check if suggestion should be approved
-          let newStatus = suggestion.status;
-          if (
-            newUpvotes >= suggestion.requiredVotes &&
-            newStatus === "pending"
-          ) {
-            newStatus = "approved";
-            // Simulate blockchain storage
-            setTimeout(() => {
-              setSuggestions((prev2) =>
-                prev2?.map((s) =>
-                  s.id === suggestionId ? { ...s, status: "implemented" } : s
-                )
-              );
-            }, 2000);
-          }
-
-          return {
-            ...suggestion,
-            upvotes: newUpvotes,
-            downvotes: newDownvotes,
-            userVote: newUserVote,
-            status: newStatus,
-          };
+      if (!res.ok) {
+        if (data.message === "You have already voted") {
+          return "ALREADY_VOTED"; // ✅ IMPORTANT
         }
-        return suggestion;
-      })
-    );
+        return "ERROR";
+      }
+
+      setSuggestions((prev) =>
+        prev.map((s) =>
+          s.id === suggestionId ? { ...s, votes: s.votes + 1 } : s
+        )
+      );
+
+      return "VOTED";
+    } catch (err) {
+      console.error(err);
+      return "ERROR";
+    }
   };
 
   const filteredSuggestions = suggestions?.filter((s) => {
@@ -144,7 +125,6 @@ export const NetworkDetail = () => {
               <button
                 className="add-suggestion-btn"
                 onClick={() => setIsModalOpen(true)}
-                
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
@@ -176,7 +156,10 @@ export const NetworkDetail = () => {
               <div className="stat-box">
                 <span className="stat-label">Implemented</span>
                 <span className="stat-value">
-                  {suggestions?.filter((s) => s.status === "Implemented").length}
+                  {
+                    suggestions?.filter((s) => s.status === "Implemented")
+                      .length
+                  }
                 </span>
               </div>
             </div>
@@ -225,7 +208,7 @@ export const NetworkDetail = () => {
                   key={suggestion.id}
                   suggestion={suggestion}
                   onVote={handleVote}
-                  network = {network}
+                  network={network}
                 />
               ))}
             </div>
@@ -247,7 +230,7 @@ export const NetworkDetail = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         network_id={id}
-        networkName = {network?.name}
+        networkName={network?.name}
       />
     </div>
   );
