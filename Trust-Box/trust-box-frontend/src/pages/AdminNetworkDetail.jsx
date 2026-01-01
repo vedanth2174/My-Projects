@@ -33,7 +33,7 @@ export const AdminNetworkDetail = ({
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/network-details/${id}`,
+          `https://trust-box-backend.vercel.app/network-details/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }
@@ -51,7 +51,7 @@ export const AdminNetworkDetail = ({
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/network-suggestions/${id}`,
+          `https://trust-box-backend.vercel.app/network-suggestions/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }
