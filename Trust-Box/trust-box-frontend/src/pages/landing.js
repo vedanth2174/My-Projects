@@ -68,8 +68,8 @@ const Dashboard = () => {
     try {
       const url =
         authMode === "login"
-          ? "http://localhost:5000/login"
-          : "http://localhost:5000/register";
+          ? "https://trust-box-backend.vercel.app/login"
+          : "https://trust-box-backend.vercel.app/register";
 
       const payload =
         authMode === "login"

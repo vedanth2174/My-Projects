@@ -15,7 +15,7 @@ export const Dashboard = ({ onNavigateToNetwork }) => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/fetch-user-networks/${user.email}`,
+          `https://trust-box-backend.vercel.app/fetch-user-networks/${user.email}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }

@@ -75,7 +75,7 @@ export const AdminNetworkDetail = ({
       setProcessingId(suggestionId);
 
       const response = await axios.post(
-        "http://localhost:5000/approve-suggestion",
+        "https://trust-box-backend.vercel.app/approve-suggestion",
         { suggestionId }
       );
 

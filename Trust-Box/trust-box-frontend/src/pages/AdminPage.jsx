@@ -15,7 +15,7 @@ export const AdminPage = ({ onNavigateToDashboard, onNavigateToExplore }) => {
     const fetchAdminNetworks = async () => {
         try{
             const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:5000/admin-networks/${user.email}`,{
+            const response = await axios.get(`https://trust-box-backend.vercel.app/admin-networks/${user.email}`,{
                 headers: token ? {Authorization: `Bearer ${token}`}: {}
             });
             setCreatedNetworks(response.data);

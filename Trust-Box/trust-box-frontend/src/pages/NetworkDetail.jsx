@@ -21,7 +21,7 @@ export const NetworkDetail = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/network-details/${id}`,
+          `https://trust-box-backend.vercel.app/network-details/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }
@@ -39,7 +39,7 @@ export const NetworkDetail = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:5000/network-suggestions/${id}`,
+          `https://trust-box-backend.vercel.app/network-suggestions/${id}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }
@@ -61,7 +61,7 @@ export const NetworkDetail = () => {
     const user = JSON.parse(localStorage.getItem("user"));
 
     try {
-      const res = await fetch("http://localhost:5000/vote-suggestion", {
+      const res = await fetch("https://trust-box-backend.vercel.app/vote-suggestion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -32,7 +32,7 @@ export const SuggestionCard = ({ suggestion, onVote, network }) => {
     const checkVote = async () => {
       try {
         const res = await fetch(
-          `http://localhost:5000/has-voted?email=${user.email}&suggestionId=${suggestion.id}`
+          `https://trust-box-backend.vercel.app/has-voted?email=${user.email}&suggestionId=${suggestion.id}`
         );
         const data = await res.json();
         setHasVoted(data.hasVoted);

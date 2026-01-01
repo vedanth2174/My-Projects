@@ -16,7 +16,7 @@ export const AddSuggestionModal = ({ isOpen, onClose, network_id, networkName })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const url = `http://localhost:5000/add-suggestion`
+    const url = `https://trust-box-backend.vercel.app/add-suggestion`
     const payload = {
       id: Math.floor(100 + Math.random() * 900),
       date: formattedDate,

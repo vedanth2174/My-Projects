@@ -21,7 +21,7 @@ export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) 
     const fetchNetworks = async () => {
         try{
             const token = localStorage.getItem('token');
-            const response = await axios.get('http://localhost:5000/fetch-networks',{
+            const response = await axios.get('https://trust-box-backend.vercel.app/fetch-networks',{
                 headers: token? {Authorization: `Bearer ${token}`}: {}
             });
             setNetworks(response.data);

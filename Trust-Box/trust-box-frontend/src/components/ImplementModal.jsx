@@ -49,7 +49,7 @@ export const ImplementModal = ({
 
       // ✅ Call backend
       const response = await axios.post(
-        "http://localhost:5000/implement-suggestion",
+        "https://trust-box-backend.vercel.app/implement-suggestion",
         {
           suggestionId: suggestion.id,
           txHash: tx.hash,
