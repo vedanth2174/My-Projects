@@ -21,7 +21,7 @@ export const ExploreNetworks = ({ onNavigateToNetwork, onNavigateToDashboard }) 
     const fetchNetworks = async () => {
         try{
             const token = localStorage.getItem('token');
-            const response = await axios.get('https://reverse-auction-m5yj.onrender.com/fetch-networks',{
+            const response = await axios.get('http://localhost:5000/fetch-networks',{
                 headers: token? {Authorization: `Bearer ${token}`}: {}
             });
             setNetworks(response.data);

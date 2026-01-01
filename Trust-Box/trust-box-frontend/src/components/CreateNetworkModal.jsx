@@ -23,7 +23,7 @@ export const CreateNetworkModal = ({
       return;
     }
 
-    const url = "https://reverse-auction-m5yj.onrender.com/create-network"
+    const url = "http://localhost:5000/create-network"
     const payload = {
       id: Math.floor(100 + Math.random() * 900),
       name: networkName,

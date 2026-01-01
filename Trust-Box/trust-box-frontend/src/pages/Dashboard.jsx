@@ -15,7 +15,7 @@ export const Dashboard = ({ onNavigateToNetwork }) => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://reverse-auction-m5yj.onrender.com/fetch-user-networks/${user.email}`,
+          `http://localhost:5000/fetch-user-networks/${user.email}`,
           {
             headers: token ? { Authorization: `Bearer ${token}` } : {},
           }
