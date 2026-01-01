@@ -527,9 +527,9 @@ app.post("/approve-suggestion", async (req, res) => {
       });
     }
 
-    // 2️⃣ Fetch network (suggestion belongs to network)
+    // 2️⃣ Fetch network (FIXED FIELD NAME)
     const network = await Network.findOne({
-      id: suggestion.networkId,
+      id: suggestion.network_id, // ✅ FIX HERE
     });
 
     if (!network) {
@@ -560,6 +560,7 @@ app.post("/approve-suggestion", async (req, res) => {
     res.status(500).json({ message: "Error approving suggestion" });
   }
 });
+
 
 
 //implement suggestion
